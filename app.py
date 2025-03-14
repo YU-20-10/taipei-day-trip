@@ -7,10 +7,6 @@ import json
 app = FastAPI()
 
 
-class JSONResponse_UTF8(JSONResponse):
-    media_type = "application/json;charset-utf-8"
-
-
 # ******
 def database():
     return mysql.connector.connect(
@@ -39,7 +35,7 @@ async def thankyou(request: Request):
     return FileResponse("./static/thankyou.html", media_type="text/html")
 
 
-@app.get("/api/attractions", response_class=JSONResponse_UTF8)
+@app.get("/api/attractions", response_class=JSONResponse)
 async def attractions(page: int, keyword: str | None = None):
     attractions_data = []
     try:
@@ -101,14 +97,20 @@ async def attractions(page: int, keyword: str | None = None):
                     "data": attractions_data[(12 * (page - 1)) : (12 * page)],
                 }
         elif 12 >= len(attractions_data) > 0:
-            return {"nextPage": None, "data": attractions_data}
+            return JSONResponse(
+                status_code=200,
+                content={"nextPage": None, "data": attractions_data},
+                media_type="application/json; charset=utf-8",
+            )
     except Exception as e:
-        return JSONResponse_UTF8(
-            status_code=500, content={"error": True, "message": str(e)}
+        return JSONResponse(
+            status_code=500,
+            content={"error": True, "message": str(e)},
+            media_type="application/json; charset=utf-8",
         )
 
 
-@app.get("/api/attractions/{attractionId}", response_class=JSONResponse_UTF8)
+@app.get("/api/attractions/{attractionId}", response_class=JSONResponse)
 async def get_attractions_by_id(attractionId: int):
     try:
         attractions_data = {}
@@ -150,14 +152,20 @@ async def get_attractions_by_id(attractionId: int):
                 "lng": none_mrt_data[8],
                 "images": json.loads(none_mrt_data[9]),
             }
-        return {"data": attractions_data}
+        return JSONResponse(
+            status_code=200,
+            content={"data": attractions_data},
+            media_type="application/json; charset=utf-8",
+        )
     except Exception:
-        return JSONResponse_UTF8(
-            status_code=500, content={"error": "ok", "message": str(Exception)}
+        return JSONResponse(
+            status_code=500,
+            content={"error": "ok", "message": str(Exception)},
+            media_type="application/json; charset=utf-8",
         )
 
 
-@app.get("/api/mrts", response_class=JSONResponse_UTF8)
+@app.get("/api/mrts", response_class=JSONResponse)
 async def mrt():
     try:
         mrt_data = []
@@ -177,8 +185,14 @@ async def mrt():
                 data[mrt[1]] += 1
         for key, value in sorted(data.items(), key=lambda item: item[1], reverse=True):
             mrt_data.append(key)
-        return {"data": mrt_data}
+        return JSONResponse(
+            status_code=200,
+            content={"data": mrt_data},
+            media_type="application/json; charset=utf-8",
+        )
     except Exception:
-        return JSONResponse_UTF8(
-            status_code=500, content={"error": "ok", "message": str(Exception)}
+        return JSONResponse(
+            status_code=500,
+            content={"error": "ok", "message": str(Exception)},
+            media_type="application/json; charset=utf-8",
         )
