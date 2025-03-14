@@ -44,8 +44,8 @@ async def attractions(page: int, keyword: str | None = None):
         # 依據是否輸入捷運站名稱進行不同的MySQL查詢
         if keyword:
             database_connect_cursor.execute(
-                "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id WHERE mrt.name=%s AND attractions.name LIKE %s ORDER BY attractions.id",
-                [keyword, f"%{keyword}%"],
+                "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id WHERE mrt.name=%s OR attractions.name LIKE %s ORDER BY attractions.id",
+                [f"%{keyword}%", f"%{keyword}%"],
             )
         else:
             database_connect_cursor.execute(
@@ -110,7 +110,7 @@ async def attractions(page: int, keyword: str | None = None):
         )
 
 
-@app.get("/api/attractions/{attractionId}", response_class=JSONResponse)
+@app.get("/api/attraction/{attractionId}", response_class=JSONResponse)
 async def get_attractions_by_id(attractionId: int):
     try:
         attractions_data = {}
