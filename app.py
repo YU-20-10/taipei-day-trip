@@ -10,7 +10,7 @@ app = FastAPI()
 # ******
 def database():
     return mysql.connector.connect(
-        host="127.0.0.1", user="root", passwd="*", database="taipei_trip"
+        host="127.0.0.1", user="test", passwd="Test@1234", database="taipei_trip"
     )
 
 
