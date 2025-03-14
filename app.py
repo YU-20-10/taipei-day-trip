@@ -88,15 +88,32 @@ async def attractions(page: int, keyword: str | None = None):
         database_connect_cursor.close()
         database_connect.close()
         # 依據得到結果return資料
-        if len(attractions_data) >= 12:
-            if page == 1 and len(attractions_data) > 12:
-                return {"nextPage": 1, "data": attractions_data[0:12]}
-            elif page > 1:
-                return {
-                    "nextPage": page,
-                    "data": attractions_data[(12 * (page - 1)) : (12 * page)],
-                }
-        elif 12 >= len(attractions_data) > 0:
+        if len(attractions_data) >= 13:
+            if page == 0:
+                return JSONResponse(
+                    status_code=200,
+                    content={"nextPage": 1, "data": attractions_data[0:12]},
+                    media_type="application/json; charset=utf-8",
+                )
+            elif page > 0 and len(attractions_data) > (page + 1) * 12 + 1:
+                return JSONResponse(
+                    status_code=200,
+                    content={
+                        "nextPage": page + 1,
+                        "data": attractions_data[(12 * page) : (12 * (page + 1))],
+                    },
+                    media_type="application/json; charset=utf-8",
+                )
+            elif page > 0 and len(attractions_data) < (page + 1) * 12 + 1:
+                return JSONResponse(
+                    status_code=200,
+                    content={
+                        "nextPage": None,
+                        "data": attractions_data[(12 * page) : (12 * (page + 1))],
+                    },
+                    media_type="application/json; charset=utf-8",
+                )
+        elif 12 >= len(attractions_data) >= 0:
             return JSONResponse(
                 status_code=200,
                 content={"nextPage": None, "data": attractions_data},
