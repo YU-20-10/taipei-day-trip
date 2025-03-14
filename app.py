@@ -7,6 +7,10 @@ import json
 app = FastAPI()
 
 
+class JSONResponse_UTF8(JSONResponse):
+    media_type = "application/json;charset-utf-8"
+
+
 # ******
 def database():
     return mysql.connector.connect(
@@ -35,7 +39,7 @@ async def thankyou(request: Request):
     return FileResponse("./static/thankyou.html", media_type="text/html")
 
 
-@app.get("/api/attractions", response_class=JSONResponse)
+@app.get("/api/attractions", response_class=JSONResponse_UTF8)
 async def attractions(page: int, keyword: str | None = None):
     attractions_data = []
     try:
@@ -99,10 +103,12 @@ async def attractions(page: int, keyword: str | None = None):
         elif 12 >= len(attractions_data) > 0:
             return {"nextPage": None, "data": attractions_data}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": True, "message": str(e)})
+        return JSONResponse_UTF8(
+            status_code=500, content={"error": True, "message": str(e)}
+        )
 
 
-@app.get("/api/attractions/{attractionId}")
+@app.get("/api/attractions/{attractionId}", response_class=JSONResponse_UTF8)
 async def get_attractions_by_id(attractionId: int):
     try:
         attractions_data = {}
@@ -146,12 +152,12 @@ async def get_attractions_by_id(attractionId: int):
             }
         return {"data": attractions_data}
     except Exception:
-        return JSONResponse(
+        return JSONResponse_UTF8(
             status_code=500, content={"error": "ok", "message": str(Exception)}
         )
 
 
-@app.get("/api/mrts")
+@app.get("/api/mrts", response_class=JSONResponse_UTF8)
 async def mrt():
     try:
         mrt_data = []
@@ -173,6 +179,6 @@ async def mrt():
             mrt_data.append(key)
         return {"data": mrt_data}
     except Exception:
-        return JSONResponse(
+        return JSONResponse_UTF8(
             status_code=500, content={"error": "ok", "message": str(Exception)}
         )
