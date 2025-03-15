@@ -42,14 +42,17 @@ async def attractions(page: int, keyword: str | None = None):
         database_connect = database()
         database_connect_cursor = database_connect.cursor()
         # 依據是否輸入捷運站名稱進行不同的MySQL查詢
+        # 使用INNER JOIN+UNION 篩選時包含mrt_id=None的對象
         if keyword:
             database_connect_cursor.execute(
-                "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id WHERE mrt.name=%s OR attractions.name LIKE %s ORDER BY attractions.id",
-                [f"%{keyword}%", f"%{keyword}%"],
+                "SELECT attractions_id, attractions_name,category,description,address,transport, mrt_name,lat,lng,images FROM (SELECT attractions.id AS attractions_id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id UNION SELECT attractions.id AS attractions_id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,NULL AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions WHERE attractions.mrt_id IS NULL) AS result WHERE mrt_name=%s OR attractions_name LIKE %s ORDER BY attractions_id LIMIT 13 OFFSET %s",
+                [keyword, f"%{keyword}%", 12 * page],
             )
         else:
+            # 使用LEFT JOIN，篩選時包含mrt_id=None的對象
             database_connect_cursor.execute(
-                "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id ORDER BY attractions.id"
+                "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions LEFT JOIN mrt ON attractions.mrt_id=mrt.id ORDER BY attractions.id LIMIT 13 OFFSET %s",
+                [12 * page],
             )
         attractions_row_data = database_connect_cursor.fetchall()
         for attraction in attractions_row_data:
@@ -66,54 +69,19 @@ async def attractions(page: int, keyword: str | None = None):
                 "images": json.loads(attraction[9]),
             }
             attractions_data.append(input_data)
-        # 處理mrt=None的資料
-        database_connect_cursor.execute(
-            "SELECT * FROM attractions WHERE mrt_id IS NULL"
-        )
-        none_mrt_data = database_connect_cursor.fetchall()
-        for data in none_mrt_data:
-            input_data = {
-                "id": data[0],
-                "name": data[1],
-                "category": data[2],
-                "description": data[3],
-                "address": data[4],
-                "transport": data[5],
-                "mrt": data[6],
-                "lat": data[7],
-                "lng": data[8],
-                "images": json.loads(data[9]),
-            }
-            attractions_data.insert(data[0] - 1, input_data)
         database_connect_cursor.close()
         database_connect.close()
-        # 依據得到結果return資料
-        if len(attractions_data) >= 13:
-            if page == 0:
-                return JSONResponse(
-                    status_code=200,
-                    content={"nextPage": 1, "data": attractions_data[0:12]},
-                    media_type="application/json; charset=utf-8",
-                )
-            elif page > 0 and len(attractions_data) > (page + 1) * 12 + 1:
-                return JSONResponse(
-                    status_code=200,
-                    content={
-                        "nextPage": page + 1,
-                        "data": attractions_data[(12 * page) : (12 * (page + 1))],
-                    },
-                    media_type="application/json; charset=utf-8",
-                )
-            elif page > 0 and len(attractions_data) < (page + 1) * 12 + 1:
-                return JSONResponse(
-                    status_code=200,
-                    content={
-                        "nextPage": None,
-                        "data": attractions_data[(12 * page) : (12 * (page + 1))],
-                    },
-                    media_type="application/json; charset=utf-8",
-                )
-        elif 12 >= len(attractions_data) >= 0:
+        # 依據取得資料，判定有無下一頁
+        if len(attractions_data) > 12:
+            return JSONResponse(
+                status_code=200,
+                content={
+                    "nextPage": page + 1,
+                    "data": attractions_data[0:12],
+                },
+                media_type="application/json; charset=utf-8",
+            )
+        else:
             return JSONResponse(
                 status_code=200,
                 content={"nextPage": None, "data": attractions_data},
