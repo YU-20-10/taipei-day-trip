@@ -11,6 +11,7 @@ const indexBannerSearchBtn = document.querySelector(".index-banner-search-btn");
 
 let nextPage = 0;
 let timeout = 0;
+let isLoading = false;
 
 async function getApiData(url) {
   try {
@@ -41,7 +42,7 @@ function createAttractionEl(attractionData) {
     "card-img": ["card-img"],
     "card-title": ["card-title", "c-white"],
     "card-text": ["card-text", "c-gray-50"],
-    "card": ["card", "index-content-attraction"],
+    card: ["card", "index-content-attraction"],
   };
   let li = document.createElement("li");
   let a = document.createElement("a");
@@ -77,13 +78,20 @@ function createAttractionEl(attractionData) {
 }
 
 // 畫面滾動時觸發
-async function scrollFn(link, keyword, id) {
+async function scrollFn(keyword, id) {
   // 確定settimeout是否已經跑完，如果還沒return
-  if (timeout) return;
+  // 確認資料是否為載入中，如果載入中則拒絕下一次請求
+  if (timeout ||  isLoading) return;
   let nextData;
-  // 確認最後一筆資料的id是否與nextPage*12相同
-  if (nextPage && (nextPage*12==id)) {
-    nextData = await getApiData(link);
+  isLoading = true;
+  if ((nextPage && nextPage * 12 == id) || (nextPage && keyword)) {
+    if (keyword) {
+      nextData = await getApiData(
+        `/api/attractions?page=${nextPage}&keyword=${keyword}`
+      );
+    } else {
+      nextData = await getApiData(`/api/attractions?page=${nextPage}`);
+    }
     nextPage = nextData["nextPage"];
   }
   timeout = setTimeout(() => {
@@ -100,31 +108,31 @@ async function scrollFn(link, keyword, id) {
         let dom = indexContentAttraction[indexContentAttraction.length - 1];
         if (dom) {
           if (keyword) {
-            addObserver(
-              dom,
-              `/api/attractions?page=${nextPage}&keyword=${keyword}`,
-              keyword
-            );
+            addObserver(dom, keyword);
           } else {
-            addObserver(dom, `/api/attractions?page=${nextPage}`, null);
+            addObserver(dom, null);
           }
         }
       }
     }
     clearTimeout(timeout);
     timeout = 0;
+    isLoading = false;
   }, 200);
 }
 
 // 偵測指定dom元素
-function addObserver(dom, link, keyword) {
+function addObserver(dom, keyword) {
+  let id = dom.dataset.id;
+  function listenerFn() {
+    return scrollFn(keyword, id)
+  }
   const observerObj = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0) {
-        id = dom.dataset.id;
-        window.addEventListener("scroll", scrollFn(link, keyword, id));
+        window.addEventListener("scroll", listenerFn);
       } else {
-        window.removeEventListener("scroll", scrollFn);
+        window.removeEventListener("scroll", listenerFn);
       }
     });
   });
@@ -171,11 +179,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
               const dom =
                 indexContentAttraction[indexContentAttraction.length - 1];
               if (dom) {
-                addObserver(
-                  dom,
-                  `/api/attractions?page=${nextPage}`,
-                  link.dataset.mrt
-                );
+                addObserver(dom, link.dataset.mrt);
               }
             }
           });
@@ -198,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
     if (indexContentAttraction) {
       const dom = indexContentAttraction[indexContentAttraction.length - 1];
       if (dom) {
-        addObserver(dom, `/api/attractions?page=${nextPage}`, null);
+        addObserver(dom, null);
       }
     }
   } catch (error) {
@@ -253,11 +257,7 @@ if (indexBannerSearchBtn) {
       if (indexContentAttraction) {
         const dom = indexContentAttraction[indexContentAttraction.length - 1];
         if (dom) {
-          addObserver(
-            dom,
-            `/api/attractions?page=${nextPage}&keyword=${searchText}`,
-            searchText
-          );
+          addObserver(dom, searchText);
         }
       }
     } catch (error) {
