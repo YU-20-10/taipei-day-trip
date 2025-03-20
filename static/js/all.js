@@ -71,23 +71,20 @@ function createAttractionEl(attractionData) {
   a.appendChild(imgDiv);
   a.appendChild(textDiv);
   a.classList.add(...classObj["card"]);
+  a.dataset.id = attractionData["id"];
   li.appendChild(a);
   return li;
 }
 
 // 畫面滾動時觸發
-async function scrollFn(link, keyword) {
+async function scrollFn(link, keyword, id) {
   // 確定settimeout是否已經跑完，如果還沒return
   if (timeout) return;
   let nextData;
-  if (nextPage) {
+  // 確認最後一筆資料的id是否與nextPage*12相同
+  if (nextPage && (nextPage*12==id)) {
     nextData = await getApiData(link);
-  }
-  // 確認fetch得到的nextPage是否有大於當前nextPage
-  if ((nextData?.nextPage > nextPage) | (nextData?.nextPage === null)) {
     nextPage = nextData["nextPage"];
-  } else {
-    nextData = null;
   }
   timeout = setTimeout(() => {
     if (nextData) {
@@ -124,7 +121,8 @@ function addObserver(dom, link, keyword) {
   const observerObj = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.intersectionRatio > 0) {
-        window.addEventListener("scroll", scrollFn(link, keyword));
+        id = dom.dataset.id;
+        window.addEventListener("scroll", scrollFn(link, keyword, id));
       } else {
         window.removeEventListener("scroll", scrollFn);
       }

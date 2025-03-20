@@ -257,7 +257,7 @@ input:focus {
     grid-template-columns: 1fr 1fr;
   }
 }
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1200px) {
   .index-content-list {
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
@@ -270,7 +270,7 @@ input:focus {
   border-radius: 5px;
 }
 
-@media screen and (min-width: 992px) {
+@media screen and (min-width: 1200px) {
   .index-content-list .card {
     max-width: 270px;
   }
