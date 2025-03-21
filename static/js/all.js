@@ -81,7 +81,7 @@ function createAttractionEl(attractionData) {
 async function scrollFn(keyword, id) {
   // 確定settimeout是否已經跑完，如果還沒return
   // 確認資料是否為載入中，如果載入中則拒絕下一次請求
-  if (timeout ||  isLoading) return;
+  if (timeout || isLoading) return;
   let nextData;
   isLoading = true;
   if ((nextPage && nextPage * 12 == id) || (nextPage && keyword)) {
@@ -125,7 +125,7 @@ async function scrollFn(keyword, id) {
 function addObserver(dom, keyword) {
   let id = dom.dataset.id;
   function listenerFn() {
-    return scrollFn(keyword, id)
+    scrollFn(keyword, id);
   }
   const observerObj = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
