@@ -1,11 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="/static/js/all.js" defer></script>
+    <title>Index</title>
+  </head>
+  <body>
+    <header class="index-header outer">
+      <div class="container index-header-container">
+        <a href="/" title="台北一日遊"
+          ><img src="/static/img/logo.svg" alt="台北一日遊logo"
+        /></a>
+        <ul class="index-header-menu">
+          <li class="index-header-menu-item">
+            <a href="#" class="index-header-menu-item-booking fz-5 fw-medium"
+              >預定行程</a
+            >
+          </li>
+          <li class="index-header-menu-item">
+            <a href="#" class="index-header-menu-item-signin fz-5 fw-medium"
+              >登入/註冊
+            </a>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section class="index-banner outer">
+      <div class="container index-banner-container">
+        <h1 class="fz-2 fw-bold c-gray-10">輕鬆享受台北一日悠閒</h1>
+        <p class="index-banner-text fz-5 fw-bold c-gray-10">
+          探索每個角落，體驗城市的深度旅遊行程
+        </p>
+        <div class="index-banner-search-outer">
+          <input
+            type="text"
+            name="index-banner-search"
+            class="index-banner-search"
+            placeholder="輸入景點名稱查詢"
+          />
+          <button type="button" class="index-banner-search-btn">
+            <img
+              src="/static/img/search-icon.svg"
+              alt="search-icon"
+              width="30"
+              height="30"
+            />
+          </button>
+        </div>
+      </div>
+    </section>
+    <section class="index-content outer">
+      <div class="container index-content-container">
+        <div class="index-content-mrt-list-outer">
+          <button type="button">
+            <img
+              src="/static/img/left-arrow.svg"
+              alt="left-arrow"
+              class="index-content-mrt-left-arrow"
+            />
+          </button>
+          <ul class="index-content-mrt-list"></ul>
+          <button type="button">
+            <img
+              src="/static/img/right-arrow.svg"
+              alt="right-arrow"
+              class="index-content-mrt-right-arrow"
+            />
+          </button>
+        </div>
+        <ul class="index-content-list"></ul>
+      </div>
+    </section>
+    <footer class="index-footer outer">
+      <div class="container c-white">COPYRIGHT © 2021 台北一日遊</div>
+    </footer>
+  </body>
 </html>
