@@ -319,8 +319,8 @@ input:focus {
   padding: 10px;
 }
 
-/* index-footer */
-.index-footer {
+/* index-footer */ /*attraction-footer*/
+.index-footer,.attraction-footer {
   background-color: #757575;
   padding-top: 45px;
   padding-bottom: 45px;
