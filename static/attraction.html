@@ -1,11 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attraction</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="/static/js/all.js" defer></script>
+    <title>Attraction</title>
+  </head>
+  <body>
+    <header class="attraction-header outer">
+      <div class="container attraction-header-container">
+        <a href="/" title="台北一日遊"
+          ><img src="/static/img/logo.svg" alt="台北一日遊logo"
+        /></a>
+        <ul class="attraction-header-menu">
+          <li class="index-header-menu-item">
+            <a
+              href="#"
+              class="attraction-header-menu-item-booking fz-5 fw-medium"
+              >預定行程</a
+            >
+          </li>
+          <li class="attraction-header-menu-item">
+            <a
+              href="#"
+              class="attraction-header-menu-item-signin fz-5 fw-medium"
+              >登入/註冊
+            </a>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <section class="attraction-content">
+      <div class="container attraction-content-container">
+        <div class="attraction-content-top">
+          <div class="attraction-content-img">
+            <div class="attraction-content-swiper-left-btn">
+              <img src="/static/img/left-arrow.svg" alt="left-arrow" />
+            </div>
+            <div class="attraction-content-swiper-right-btn">
+              <img src="/static/img/right-arrow.svg" alt="right-arrow" />
+            </div>
+            <div class="attraction-content-swiper-pagination"></div>
+          </div>
+          <div class="attraction-content-select">
+            <div class="attraction-content-title-outer c-gray-70"></div>
+            <div class="attraction-content-form-outer">
+              <form action="" class="attraction-content-form c-gray-70">
+                <h2 class="fz-5 fw-bold">訂購導覽行程</h2>
+                <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
+                <div class="d-flex-row">
+                  <label
+                    class="fw-bold attraction-content-form-label"
+                    for="date"
+                    >選擇日期：</label
+                  >
+                  <input
+                    type="date"
+                    name="date"
+                    id="date"
+                    class="attraction-content-form-date"
+                  />
+                </div>
+                <div class="d-flex-row">
+                  <p class="fw-bold">選擇時間：</p>
+                  <div class="d-flex-row">
+                    <input
+                      class="attraction-content-form-radio"
+                      type="radio"
+                      name="time"
+                      id="morning"
+                      value="morning"
+                      checked
+                    />
+                    <label class="fw-medium" for="morning">上半天</label>
+                  </div>
+                  <div class="d-flex-row">
+                    <input
+                      class="attraction-content-form-radio"
+                      type="radio"
+                      name="time"
+                      id="afternoon"
+                      value="afternoon"
+                    />
+                    <label class="fw-medium" for="afternoon">下半天</label>
+                  </div>
+                </div>
+                <div class="d-flex-row">
+                  <p class="fw-bold c-gray-70 attraction-content-form-label">
+                    導覽費用：
+                  </p>
+                  <p class="fw-medium">
+                    新台幣
+                    <span class="attraction-content-form-price">2000</span> 元
+                  </p>
+                </div>
+              </form>
+              <button
+                class="attraction-content-select-btn fz-4 c-white"
+                type="button"
+              >
+                開始預約行程
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="attraction-content-bottom c-gray-7"></div>
+      </div>
+    </section>
+    <footer class="attraction-footer outer">
+      <div class="container c-white">COPYRIGHT © 2021 台北一日遊</div>
+    </footer>
+  </body>
 </html>
