@@ -2,8 +2,12 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
 import mysql.connector
 import json
+import os
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -13,7 +17,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # ******
 def database():
     return mysql.connector.connect(
-        host="127.0.0.1", user="test", passwd="Test@1234", database="taipei_trip"
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
     )
 
 
