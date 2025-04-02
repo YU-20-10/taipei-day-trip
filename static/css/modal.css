@@ -1,0 +1,88 @@
+/*畫面反灰設定*/
+.modal-backdrop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000000;
+  opacity: 0.25;
+  z-index: 2;
+}
+
+.member-modal {
+  display: none;
+  position: absolute;
+  top: 80px;
+  width: 94%;
+  max-width: 340px;
+  background: linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(to right, #66aabb, #337788) border-box;
+  padding: 15px 15px 16px 15px;
+  border-width: 10px 0px 0px 0px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 5px;
+  z-index: 3;
+}
+
+.member-modal-header {
+  text-align: center;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.member-modal-close-btn {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  border-width: 0px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.member-modal-input {
+  margin-bottom: 10px;
+  width: 100%;
+  height: 47px;
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  padding: 16.5px 15px;
+}
+
+.member-signin-modal::placeholder {
+  color: #757575;
+  font-weight: 500;
+}
+
+.member-modal-btn {
+  padding: 10px 20px;
+  background-color: #448899;
+  border-width: 0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.member-modal-btn:hover {
+  background-color: #66aabb;
+}
+
+.member-modal-go-btn:hover {
+  color: black;
+}
+
+.modal-show {
+  display: block;
+}
+
+.member-signin-message {
+  margin-bottom: 10px;
+  color: red;
+}
+
+.member-signup-message {
+  margin-bottom: 10px;
+  color: red;
+}

@@ -1,0 +1,56 @@
+/*共通文字設定*/
+.fz-1 {
+  font-size: 30px;
+}
+
+.fz-2 {
+  font-size: 28px;
+}
+
+.fz-3 {
+  font-size: 24px;
+}
+
+.fz-4 {
+  font-size: 19px;
+}
+
+.fz-5 {
+  font-size: 16px;
+}
+
+.fz-6 {
+  font-size: 14px;
+}
+
+.fw-bold {
+  font-weight: 700;
+}
+
+.fw-medium {
+  font-weight: 500;
+}
+
+.fw-regular {
+  font-weight: 400;
+}
+
+.c-white {
+  color: #ffffff;
+}
+
+.c-gray-10 {
+  color: #f8f8f8;
+}
+
+.c-gray-50 {
+  color: #757575;
+}
+
+.c-gray-70 {
+  color: #666666;
+}
+
+.text-center {
+  text-align: center;
+}

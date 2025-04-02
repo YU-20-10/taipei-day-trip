@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/style.css" />
-    <script src="/static/js/all.js" defer></script>
+    <script type="module" src="/static/js/all.js" defer></script>
     <title>Index</title>
   </head>
   <body>
@@ -15,16 +15,113 @@
         /></a>
         <ul class="index-header-menu">
           <li class="index-header-menu-item">
-            <a href="#" class="index-header-menu-item-booking fz-5 fw-medium"
+            <a
+              href="#"
+              class="index-header-menu-item-link menu-item-booking fz-5 fw-medium"
               >預定行程</a
             >
           </li>
           <li class="index-header-menu-item">
-            <a href="#" class="index-header-menu-item-signin fz-5 fw-medium"
+            <a
+              href="#"
+              class="index-header-menu-item-link menu-item-member fz-5 fw-medium"
               >登入/註冊
             </a>
           </li>
         </ul>
+      </div>
+      <div class="member-modal member-signin">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>登入會員帳號</p>
+            <button
+              type="button"
+              class="member-signin-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signin-form">
+            <input
+              type="text"
+              name="email"
+              id="login-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="text"
+              name="password"
+              id="login-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signin-submit-btn member-modal-btn c-white fz-4"
+          >
+            登入帳戶
+          </button>
+          <p class="text-center fw-medium member-signin-message"></p>
+          <p class="text-center fw-medium">
+            還沒有帳戶？<a
+              href="#"
+              class="member-signup-go-btn member-modal-go-btn"
+              >點此註冊</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="member-modal member-signup">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>註冊會員帳號</p>
+            <button
+              type="button"
+              class="member-signup-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signup-form">
+            <input
+              type="text"
+              name="name"
+              id="signup-name"
+              placeholder="輸入姓名"
+              class="member-modal-input"
+            />
+            <input
+              type="text"
+              name="email"
+              id="signup-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="text"
+              name="password"
+              id="signup-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signup-submit-btn member-modal-btn c-white fz-4"
+          >
+            註冊新帳戶
+          </button>
+          <p class="text-center fw-medium member-signup-message"></p>
+          <p class="text-center fw-medium">
+            已經有帳戶了？<a
+              href="#"
+              class="member-signin-go-btn member-modal-go-btn"
+              >點此登入</a
+            >
+          </p>
+        </div>
       </div>
     </header>
     <section class="index-banner outer">
