@@ -1,20 +1,45 @@
 # from fastapi import *
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from dotenv import load_dotenv
+from pydantic import BaseModel
+from datetime import timezone
+from fastapi.security import OAuth2PasswordBearer
 import mysql.connector
 import json
+import os
+import jwt
+import datetime
+
+load_dotenv()
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+outh2 = OAuth2PasswordBearer(tokenUrl="token")
+
 
 # ******
 def database():
     return mysql.connector.connect(
-        host="127.0.0.1", user="test", passwd="Test@1234", database="taipei_trip"
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
     )
+
+
+class signin_form_data(BaseModel):
+    email: str
+    password: str
+
+
+class signup_form_data(BaseModel):
+    name: str
+    email: str
+    password: str
 
 
 # Static Pages (Never Modify Code in this Block)
@@ -148,7 +173,7 @@ async def get_attractions_by_id(attractionId: int):
     except Exception:
         return JSONResponse(
             status_code=500,
-            content={"error": "ok", "message": str(Exception)},
+            content={"error": True, "message": str(Exception)},
             media_type="application/json; charset=utf-8",
         )
 
@@ -165,8 +190,6 @@ async def mrt():
         mrt_row_data = database_connect_cursor.fetchall()
         data = {}
         for mrt in mrt_row_data:
-            # print(mrt)
-            # print(data.get(mrt[1], None))
             if data.get(mrt[1], None) is None:
                 data[mrt[1]] = 1
             else:
@@ -181,6 +204,110 @@ async def mrt():
     except Exception:
         return JSONResponse(
             status_code=500,
-            content={"error": "ok", "message": str(Exception)},
+            content={"error": True, "message": str(Exception)},
+            media_type="application/json; charset=utf-8",
+        )
+
+
+@app.post("/api/user", response_class=JSONResponse)
+async def user_signup(signup_form_data: signup_form_data):
+    try:
+        print(signup_form_data)
+        database_connect = database()
+        database_connect_cursor = database_connect.cursor(dictionary=True)
+        database_connect_cursor.execute(
+            "SELECT email FROM users WHERE email=%s", [signup_form_data.email]
+        )
+        email_check = database_connect_cursor.fetchone()
+        if email_check:
+            return JSONResponse(
+                status_code=400,
+                content={"error": True, "message": "此信箱已被註冊"},
+                media_type="application/json; charset=utf-8",
+            )
+        database_connect_cursor.execute(
+            "INSERT INTO users(name,email,password) VALUES (%s,%s,%s)",
+            [signup_form_data.name, signup_form_data.email, signup_form_data.password],
+        )
+        database_connect.commit()
+        database_connect_cursor.close()
+        database_connect.close()
+        return JSONResponse(
+            status_code=200,
+            content={"ok": True},
+            media_type="application/json; charset=utf-8",
+        )
+    except mysql.connector.Error as error:
+        print("Error code:", error.errno)
+        print("Error message:", error.msg)
+        return JSONResponse(
+            status_code=500,
+            content={"error": True, "message": "伺服器內部錯誤"},
+            media_type="application/json; charset=utf-8",
+        )
+    except Exception:
+        return JSONResponse(
+            status_code=500,
+            content={"error": True, "message": str(Exception)},
+            media_type="application/json; charset=utf-8",
+        )
+
+
+@app.get("/api/user/auth", response_class=JSONResponse)
+async def user_status(token: str = Depends(outh2)):
+    try:
+        key = os.getenv("JWT_SECRET_KEY")
+        data = jwt.decode(token, key, algorithms=["HS256"])
+        del data["exp"]
+        return JSONResponse(
+            status_code=200,
+            content={"data": data},
+            media_type="application/json; charset=utf-8",
+        )
+    except Exception:
+        print(str(Exception))
+        return JSONResponse(status_code=200, content=None)
+
+
+@app.put("/api/user/auth", response_class=JSONResponse)
+async def user_signin(signin_form_data: signin_form_data):
+    try:
+        database_connect = database()
+        database_connect_cursor = database_connect.cursor(dictionary=True)
+        database_connect_cursor.execute(
+            "SELECT id,name,email FROM users WHERE email=%s and password=%s",
+            [signin_form_data.email, signin_form_data.password],
+        )
+        signin_check = database_connect_cursor.fetchone()
+        database_connect_cursor.close()
+        database_connect.close()
+        if signin_check:
+            signin_check["exp"] = datetime.datetime.now(
+                tz=timezone.utc
+            ) + datetime.timedelta(days=7)
+            key = os.getenv("JWT_SECRET_KEY")
+            print(signin_check)
+            token = jwt.encode(signin_check, key, algorithm="HS256")
+            return JSONResponse(
+                status_code=200,
+                content={"token": token},
+                media_type="application/json; charset=utf-8",
+            )
+        else:
+            return JSONResponse(
+                status_code=400, content={"error": True, "message": "信箱或是密碼錯誤"}
+            )
+    except mysql.connector.Error as error:
+        print("Error code:", error.errno)
+        print("Error message:", error.msg)
+        return JSONResponse(
+            status_code=500,
+            content={"error": True, "message": "伺服器內部錯誤"},
+            media_type="application/json; charset=utf-8",
+        )
+    except Exception:
+        return JSONResponse(
+            status_code=500,
+            content={"error": True, "message": str(Exception)},
             media_type="application/json; charset=utf-8",
         )

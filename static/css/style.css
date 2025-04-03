@@ -1,44 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-/* 共通設定 */
-* {
-  box-sizing: border-box;
-  font-family: "Noto Sans TC", sans-serif;
-  color: #666666;
-  max-width: 100%;
-}
-
-body,
-h1,
-h2,
-h3 {
-  margin: 0px;
-}
-
-ul {
-  list-style: none;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  padding: 0px;
-}
-
-a {
-  text-decoration: none;
-  color: #666666;
-}
-
-p {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-button {
-  padding: 0px;
-}
-
-input:focus {
-  outline: none;
-}
+@import url("base.css");
+@import url("font.css");
+@import url("modal.css");
 
 /*共通容器設定*/
 .outer {
@@ -56,58 +19,6 @@ input:focus {
   }
 }
 
-/*共通文字設定*/
-.fz-1 {
-  font-size: 30px;
-}
-
-.fz-2 {
-  font-size: 28px;
-}
-
-.fz-3 {
-  font-size: 24px;
-}
-
-.fz-4 {
-  font-size: 19px;
-}
-
-.fz-5 {
-  font-size: 16px;
-}
-
-.fz-6 {
-  font-size: 14px;
-}
-
-.fw-bold {
-  font-weight: 700;
-}
-
-.fw-medium {
-  font-weight: 500;
-}
-
-.fw-regular {
-  font-weight: 400;
-}
-
-.c-white {
-  color: #ffffff;
-}
-
-.c-gray-10 {
-  color: #f8f8f8;
-}
-
-.c-gray-50 {
-  color: #757575;
-}
-
-.c-gray-70 {
-  color: #666666;
-}
 /*通用flex設定*/
 .d-flex-row {
   display: flex;
@@ -136,6 +47,14 @@ input:focus {
 .index-header-menu-item,
 .attraction-header-menu-item {
   padding: 10px;
+}
+
+.menu-item-member:hover:hover {
+  color: #000;
+}
+
+.index-header {
+  position: relative;
 }
 
 /*index-banner*/
@@ -320,7 +239,8 @@ input:focus {
 }
 
 /* index-footer */ /*attraction-footer*/
-.index-footer,.attraction-footer {
+.index-footer,
+.attraction-footer {
   background-color: #757575;
   padding-top: 45px;
   padding-bottom: 45px;

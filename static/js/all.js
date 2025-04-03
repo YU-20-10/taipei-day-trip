@@ -1,3 +1,5 @@
+import memberModal from "./member-modal.js";
+
 const indexContentMrtList = document.querySelector(".index-content-mrt-list");
 const indexContentMrtLeft = document.querySelector(
   ".index-content-mrt-left-arrow"
@@ -8,6 +10,7 @@ const indexContentMrtRight = document.querySelector(
 const indexContentList = document.querySelector(".index-content-list");
 const indexBannerSearch = document.querySelector(".index-banner-search");
 const indexBannerSearchBtn = document.querySelector(".index-banner-search-btn");
+const menuItemMember = document.querySelector(".menu-item-member");
 const attractionContentTitleOuter = document.querySelector(
   ".attraction-content-title-outer"
 );
@@ -36,6 +39,12 @@ const attractionContentSelectBtn = document.querySelector(
 const attractionContentForm = document.querySelector(
   ".attraction-content-form"
 );
+const memberSignin = document.querySelector(".member-signin");
+const memberSigninForm = document.querySelector(".member-signin-form");
+const memberSigninGoBtn = document.querySelector(".member-signin-go-btn");
+const memberSignup = document.querySelector(".member-signup");
+const memberSignupForm = document.querySelector(".member-signup-form");
+const memberSignupGoBtn = document.querySelector(".member-signup-go-btn");
 // 待節點插入後，node再綁定此變數
 let attractionContentSwiperOuter;
 
@@ -227,6 +236,21 @@ function createAttractionPageEl(attractionData) {
   });
 }
 
+async function signinCheck() {
+  let token = localStorage.getItem("taipei_day_trip");
+  try {
+    let response = await fetch("/api/user/auth", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  } catch (error) {
+    throw error;
+  }
+}
+
 // 畫面滾動時觸發
 async function scrollFn(keyword, id) {
   // 確定settimeout是否已經跑完，如果還沒return
@@ -290,6 +314,10 @@ function addObserver(dom, keyword) {
 
 document.addEventListener("DOMContentLoaded", async (e) => {
   try {
+    let status = await signinCheck();
+    if (status) {
+      menuItemMember.textContent = "登出系統";
+    }
     // 確定網址是否符合/attraction/:id
     // (id必須為數字)(網址列後方可以是/結尾或是不加其他東西結尾)
     // window.location.href取得的網址不包含查詢字串
@@ -305,8 +333,6 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       ]);
       mrtData = data?.[0];
       attractionData = data?.[1];
-      // const mrtData = await getApiData("/api/mrts");
-      // const attractionData = await getApiData("/api/attractions?page=0");
       if (Object.keys(mrtData).length > 0) {
         // 取得mrt資料並渲染+監聽
         mrtData.data.forEach((mrt) => {
@@ -350,6 +376,103 @@ if (indexContentMrtLeft) {
       left: -100,
       behavior: "smooth",
     });
+  });
+}
+
+// 登入註冊按鈕
+if (menuItemMember) {
+  menuItemMember.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      let status = await signinCheck();
+      if (status) {
+        localStorage.removeItem("taipei_day_trip");
+        window.location.replace(window.location.href);
+      } else {
+        const bodyDom = document.querySelector("body");
+        const signinDom = document.querySelector(".member-signin");
+        const signupDom = document.querySelector(".member-signup");
+        const memberSigninCloseBtn = document.querySelector(
+          ".member-signin-close-btn"
+        );
+        const memberSignupCloseBtn = document.querySelector(
+          ".member-signup-close-btn"
+        );
+        const memberSignupGoBtn = document.querySelector(
+          ".member-signup-go-btn"
+        );
+        const memberSigninGoBtn = document.querySelector(
+          ".member-signin-go-btn"
+        );
+        const memberSigninSubmitBtn = document.querySelector(
+          ".member-signin-submit-btn"
+        );
+        const memberSignupSubmitBtn = document.querySelector(
+          ".member-signup-submit-btn"
+        );
+        const memberSigninForm = document.querySelector(".member-signin-form");
+        const memberSignupForm = document.querySelector(".member-signup-form");
+        const memberSigninMessage = document.querySelector(
+          ".member-signin-message"
+        );
+        const memberSignupMessage = document.querySelector(
+          ".member-signup-message"
+        );
+        memberModal.showModal(bodyDom, signinDom, memberSigninMessage);
+
+        if (memberSignupGoBtn) {
+          memberSignupGoBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            memberModal.hideModal(bodyDom, signinDom);
+            memberModal.showModal(bodyDom, signupDom, memberSignupMessage);
+          });
+        }
+
+        if (memberSigninGoBtn) {
+          memberSigninGoBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            memberModal.hideModal(bodyDom, signupDom);
+            memberModal.showModal(bodyDom, signinDom, memberSigninMessage);
+          });
+        }
+
+        if (memberSigninCloseBtn) {
+          memberSigninCloseBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            memberModal.hideModal(bodyDom, signinDom);
+          });
+        }
+
+        if (memberSignupCloseBtn) {
+          memberSignupCloseBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            memberModal.hideModal(bodyDom, signupDom);
+          });
+        }
+
+        if (memberSigninSubmitBtn) {
+          memberSigninSubmitBtn.addEventListener("click", (e) => {
+            memberModal.formDataHandle(
+              "signin",
+              memberSigninForm,
+              memberSigninMessage
+            );
+          });
+        }
+
+        if (memberSignupSubmitBtn) {
+          memberSignupSubmitBtn.addEventListener("click", (e) => {
+            memberModal.formDataHandle(
+              "signup",
+              memberSignupForm,
+              memberSignupMessage
+            );
+          });
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   });
 }
 
