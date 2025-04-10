@@ -1,4 +1,6 @@
 import memberModal from "./member-modal.js";
+import attractionPage from "./attraction-page.js";
+import bookingSystem from "./booking-system.js";
 
 const indexContentMrtList = document.querySelector(".index-content-mrt-list");
 const indexContentMrtLeft = document.querySelector(
@@ -45,6 +47,14 @@ const memberSigninGoBtn = document.querySelector(".member-signin-go-btn");
 const memberSignup = document.querySelector(".member-signup");
 const memberSignupForm = document.querySelector(".member-signup-form");
 const memberSignupGoBtn = document.querySelector(".member-signup-go-btn");
+const menuItemBooking = document.querySelector(".menu-item-booking");
+const bookingInfoContainer = document.querySelector(".booking-info-container");
+const bookingContactName = document.querySelector(".booking-contact-name");
+const bookingContactEmail = document.querySelector(".booking-contact-email");
+const bookingConfirmTotal = document.querySelector(".booking-confirm-total");
+const bookingContact = document.querySelector(".booking-contact");
+const bookingPayment = document.querySelector(".booking-payment");
+const bookingConfirm = document.querySelector(".booking-confirm");
 // 待節點插入後，node再綁定此變數
 let attractionContentSwiperOuter;
 
@@ -269,6 +279,7 @@ async function scrollFn(keyword, id) {
     // nextPage變更
     nextPage = nextData["nextPage"];
   }
+  clearTimeout(timeout);
   timeout = setTimeout(() => {
     if (nextData) {
       // 畫面渲染
@@ -288,10 +299,9 @@ async function scrollFn(keyword, id) {
         }
       }
     }
-    clearTimeout(timeout);
     timeout = 0;
     isLoading = false;
-  }, 200);
+  }, 100);
 }
 
 // 偵測指定dom元素
@@ -363,19 +373,39 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       attractionContentSwiperPagination.firstChild.classList.add(
         "attraction-content-pagination-element-active"
       );
+    } else if (currentUrl === "/booking") {
+      if (!status) {
+        window.location.href = "/";
+      }
+      const domList = {
+        bookingInfoContainer: bookingInfoContainer,
+        bookingConfirmTotal: bookingConfirmTotal,
+        bookingContact: bookingContact,
+        bookingPayment: bookingPayment,
+        bookingConfirm: bookingConfirm,
+      };
+      bookingSystem.showBooking(domList, status);
+      bookingContactName.value = status["data"]["name"];
+      bookingContactEmail.value = status["data"]["email"];
     }
   } catch (error) {
     throw new Error(error.message);
   }
 });
 
-//mrt列往左按鈕
-if (indexContentMrtLeft) {
-  indexContentMrtLeft.addEventListener("click", (e) => {
-    indexContentMrtList.scrollBy({
-      left: -100,
-      behavior: "smooth",
-    });
+if (menuItemBooking) {
+  menuItemBooking.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      let status = await signinCheck();
+      if (status) {
+        window.location.href = "/booking";
+      } else {
+        menuItemMember.click();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
 }
 
@@ -476,6 +506,16 @@ if (menuItemMember) {
   });
 }
 
+//mrt列往左按鈕
+if (indexContentMrtLeft) {
+  indexContentMrtLeft.addEventListener("click", (e) => {
+    indexContentMrtList.scrollBy({
+      left: -100,
+      behavior: "smooth",
+    });
+  });
+}
+
 // mrt列往右按鈕
 if (indexContentMrtRight) {
   indexContentMrtRight.addEventListener("click", (e) => {
@@ -568,8 +608,22 @@ if (attractionContentSwiperRightBtn) {
 }
 
 if (attractionContentSelectBtn) {
-  attractionContentSelectBtn.addEventListener("click", (e) => {
-    let formData = Object.fromEntries(new FormData(attractionContentForm));
-    // console.log(formData);
+  attractionContentSelectBtn.addEventListener("click", async (e) => {
+    try {
+      let status = await signinCheck();
+      if (status) {
+        let result = await attractionPage.formDataHandle(
+          currentUrl,
+          attractionContentForm
+        );
+        if (result["ok"]) {
+          window.location.href = "/booking";
+        }
+      } else {
+        menuItemMember.click();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   });
 }

@@ -1,22 +1,8 @@
 import json
-import mysql.connector
 import secrets
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
-
-# ******
-# def database():
-#     return mysql.connector.connect(host="127.0.0.1", user="root", passwd="*")
-def database():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME"),
-    )
+from db_config import database
 
 
 attrations_data = []
@@ -102,6 +88,22 @@ database_connect_cursor = database_connect.cursor()
 # )
 # database_connect_cursor.execute("INSERT INTO users (id,name,email,password) VALUES (%s,%s,%s,%s)",[1,"test","test@test.com","test"])
 
+# table booking
+# database_connect_cursor.execute(
+#     "CREATE TABLE bookings(id BIGINT PRIMARY KEY AUTO_INCREMENT,user_id BIGINT NOT NULL,attraction_id BIGINT NOT NULL,date DATE NOT NULL,time VARCHAR(50) NOT NULL,price BIGINT UNSIGNED NOT NULL,FOREIGN KEY(user_id) REFERENCES users (id),FOREIGN KEY(attraction_id) REFERENCES attractions (id))"
+# )
+# database_connect_cursor.execute(
+#     "INSERT INTO bookings(id,user_id,attraction_id,date,time,price) VALUES (1,1,1,'2025-04-08','morning',2000)"
+# )
+# database_connect_cursor.execute(
+#     "ALTER TABLE bookings ADD UNIQUE (user_id)"
+# )
+# database_connect_cursor.execute(
+#     "ALTER TABLE bookings ADD CONSTRAINT uq_user_id UNIQUE (user_id)"
+# )
+# database_connect_cursor.execute("SELECT user_id, COUNT(*) AS cnt FROM bookings GROUP BY user_id HAVING cnt > 1")
+# data = database_connect_cursor.fetchall()
+# print(data)
 database_connect.commit()
 database_connect_cursor.close()
 database_connect.close()

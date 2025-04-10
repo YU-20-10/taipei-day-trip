@@ -121,9 +121,6 @@ function memberModal() {
         }
       }
     },
-    userStatus: async () => {
-      modal.signinCheck();
-    },
   };
 
   return controller;
