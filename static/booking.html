@@ -1,11 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Booking</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script type="module" defer src="/static/js/all.js"></script>
+    <title>Booking</title>
+  </head>
+  <body>
+    <header class="booking-header outer">
+      <div class="container header-container">
+        <a href="/" title="台北一日遊"
+          ><img src="/static/img/logo.svg" alt="台北一日遊logo"
+        /></a>
+        <ul class="header-menu">
+          <li class="header-menu-item">
+            <a
+              href="#"
+              class="header-menu-item-link menu-item-booking fz-5 fw-medium"
+              >預定行程</a
+            >
+          </li>
+          <li class="header-menu-item">
+            <a
+              href="#"
+              class="header-menu-item-link menu-item-member fz-5 fw-medium"
+              >登入/註冊
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="member-modal member-signin">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>登入會員帳號</p>
+            <button
+              type="button"
+              class="member-signin-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signin-form">
+            <input
+              type="text"
+              name="email"
+              id="login-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="password"
+              name="password"
+              id="login-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signin-submit-btn member-modal-btn c-white fz-4"
+          >
+            登入帳戶
+          </button>
+          <p class="text-center fw-medium member-signin-message"></p>
+          <p class="text-center fw-medium">
+            還沒有帳戶？<a
+              href="#"
+              class="member-signup-go-btn member-modal-go-btn"
+              >點此註冊</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="member-modal member-signup">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>註冊會員帳號</p>
+            <button
+              type="button"
+              class="member-signup-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signup-form">
+            <input
+              type="text"
+              name="name"
+              id="signup-name"
+              placeholder="輸入姓名"
+              class="member-modal-input"
+            />
+            <input
+              type="text"
+              name="email"
+              id="signup-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="password"
+              name="password"
+              id="signup-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signup-submit-btn member-modal-btn c-white fz-4"
+          >
+            註冊新帳戶
+          </button>
+          <p class="text-center fw-medium member-signup-message"></p>
+          <p class="text-center fw-medium">
+            已經有帳戶了？<a
+              href="#"
+              class="member-signin-go-btn member-modal-go-btn"
+              >點此登入</a
+            >
+          </p>
+        </div>
+      </div>
+    </header>
+    <section class="booking-info outer">
+      <div class="container booking-info-container d-flex-column "></div>
+    </section>
+    <section class="booking-contact outer booking-hide">
+      <div class="container booking-contact-container d-flex-column">
+        <h2 class="booking-contact-header fz-4 fw-bold">您的聯絡資訊</h2>
+        <form class="booking-contact-form">
+          <div class="booking-contact-form-item">
+            <label for="contact-name">聯絡姓名：</label>
+            <input type="text" id="contact-name" class="booking-contact-name" />
+          </div>
+          <div class="booking-contact-form-item">
+            <label for="contact-email">連絡信箱：</label>
+            <input
+              type="email"
+              id="contact-email"
+              class="booking-contact-email"
+            />
+          </div>
+          <div class="booking-contact-form-item">
+            <label for="contact-phonenum">手機號碼：</label>
+            <input
+              type="text"
+              id="contact-phonenum"
+              class="booking-contact-phonenum"
+            />
+          </div>
+        </form>
+        <p class="booking-contact-text fw-bold">
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+        </p>
+      </div>
+    </section>
+    <section class="booking-payment outer booking-hide">
+      <div class="container booking-payment-container d-flex-column">
+        <h2 class="booking-payment-header fz-4 fw-bold">信用卡付款資訊</h2>
+        <form class="booking-payment-form">
+          <div class="booking-payment-form-item">
+            <label for="payment-card-num">卡片號碼：</label>
+            <input type="text" id="payment-card-num" placeholder="**** **** **** ****"/>
+          </div>
+          <div class="booking-payment-form-item">
+            <label for="payment-card-exp">過期時間：</label>
+            <input type="text" id="payment-card-exp" placeholder="MM / YY"/>
+          </div>
+          <div class="booking-payment-form-item">
+            <label for="payment-card-cvv">驗證密碼：</label>
+            <input type="text" id="payment-card-cvv" placeholder="CVV"/>
+          </div>
+        </form>
+      </div>
+    </section>
+    <section class="booking-confirm outer booking-hide">
+      <div class="container booking-confirm-container">
+        <div class="booking-confirm-content d-flex-column">
+          <p class="fw-bold booking-confirm-total-outer">
+            總價：新台幣 <span class="booking-confirm-total"></span> 元
+          </p>
+          <button type="button" class="booking-confirm-btn fz-4 c-white">
+            確認訂購並付款
+          </button>
+        </div>
+      </div>
+    </section>
+    <footer class="footer outer">
+      <div class="container c-white">COPYRIGHT © 2021 台北一日遊</div>
+    </footer>
+  </body>
 </html>
