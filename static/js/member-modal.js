@@ -62,12 +62,18 @@ function memberModal() {
   };
   let view = {
     backdrop: (dom) => {
-      if (!dom.classList.contains("modal-backdrop")) {
-        dom.classList.add("modal-backdrop");
+      let check = document.querySelector(".modal-backdrop");
+      if (!check) {
+        const div = document.createElement("div");
+        div.classList.add("modal-backdrop");
+        dom.appendChild(div);
       }
     },
     backdropRemove: (dom) => {
-      dom.classList.remove("modal-backdrop");
+      const div = document.querySelector(".modal-backdrop");
+      if (div) {
+        div.remove();
+      }
     },
     show: (dom) => {
       dom.classList.add("modal-show");
@@ -87,6 +93,7 @@ function memberModal() {
       view.messageInit(messageDom);
       view.backdrop(bodyDom);
       view.show(elDom);
+      controller.clickHide("modal-backdrop", bodyDom, elDom);
     },
     hideModal: (bodyDom, elDom) => {
       view.backdropRemove(bodyDom);
@@ -120,6 +127,12 @@ function memberModal() {
           view.message(messageDom, "姓名或信箱或密碼格式錯誤");
         }
       }
+    },
+    clickHide: (className, bodyDom, elDom) => {
+      let dom = document.querySelector(`.${className}`);
+      dom.addEventListener("click", (e) => {
+        controller.hideModal(bodyDom, elDom);
+      });
     },
   };
 

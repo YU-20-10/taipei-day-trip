@@ -1,11 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You</title>
-</head>
-<body>
-  
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script type="module" src="/static/js/all.js" defer></script>
+    <title>Thank You</title>
+  </head>
+  <body>
+    <header class="thankyou-header outer">
+      <div class="container header-container">
+        <a href="/" title="台北一日遊"
+          ><img src="/static/img/logo.svg" alt="台北一日遊logo"
+        /></a>
+        <ul class="header-menu">
+          <li class="header-menu-item">
+            <a
+              href="#"
+              class="header-menu-item-link menu-item-booking fz-5 fw-medium"
+              >預定行程</a
+            >
+          </li>
+          <li class="header-menu-item">
+            <a
+              href="#"
+              class="header-menu-item-link menu-item-member fz-5 fw-medium"
+              >登入/註冊
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="member-modal member-signin">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>登入會員帳號</p>
+            <button
+              type="button"
+              class="member-signin-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signin-form">
+            <input
+              type="text"
+              name="email"
+              id="login-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="password"
+              name="password"
+              id="login-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signin-submit-btn member-modal-btn c-white fz-4"
+          >
+            登入帳戶
+          </button>
+          <p class="text-center fw-medium member-signin-message"></p>
+          <p class="text-center fw-medium">
+            還沒有帳戶？<a
+              href="#"
+              class="member-signup-go-btn member-modal-go-btn"
+              >點此註冊</a
+            >
+          </p>
+        </div>
+      </div>
+      <div class="member-modal member-signup">
+        <div class="member-modal-content d-flex-column">
+          <h2 class="member-modal-header">
+            <p>註冊會員帳號</p>
+            <button
+              type="button"
+              class="member-signup-close-btn member-modal-close-btn"
+            >
+              <img src="/static/img/close-icon.svg" alt="close-icon" />
+            </button>
+          </h2>
+          <form class="member-signup-form">
+            <input
+              type="text"
+              name="name"
+              id="signup-name"
+              placeholder="輸入姓名"
+              class="member-modal-input"
+            />
+            <input
+              type="text"
+              name="email"
+              id="signup-email"
+              placeholder="輸入電子信箱"
+              class="member-modal-input"
+            />
+            <input
+              type="password"
+              name="password"
+              id="signup-password"
+              placeholder="輸入密碼"
+              class="member-modal-input"
+            />
+          </form>
+          <button
+            type="button"
+            class="member-signup-submit-btn member-modal-btn c-white fz-4"
+          >
+            註冊新帳戶
+          </button>
+          <p class="text-center fw-medium member-signup-message"></p>
+          <p class="text-center fw-medium">
+            已經有帳戶了？<a
+              href="#"
+              class="member-signin-go-btn member-modal-go-btn"
+              >點此登入</a
+            >
+          </p>
+        </div>
+      </div>
+    </header>
+    <section class="thankyou outer">
+      <div class="container thankyou-container d-flex-column thankyou-hide">
+        <div class="thankyou-content">
+          <h2 class="fz-3 margin-b-lg">感謝您的預定，期待到時與您相見</h2>
+          <div class="card margin-b-lg">
+            <div class="card-header">
+              <p class="fz-4 fw-bold">
+                訂單編號：<span class="order-number fw-regular"></span>
+              </p>
+              <p class="fz-4 fw-bold">
+                訂單金額：<span class="order-price fw-regular"></span>
+              </p>
+            </div>
+            <div class="card-body">
+              <p class="fz-4 margin-b-sm fw-bold c-gray-50">購買資訊</p>
+              <div class="thankyou-card-content">
+                <div class="order-img thankyou-order-img"></div>
+                <div>
+                  <p class="fw-medium">台北一日導覽</p>
+                  <p class="fw-medium">
+                    地點：<span class="order-place fw-regular"></span>
+                  </p>
+                  <p class="fw-medium">
+                    時間：<span class="order-time fw-regular"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p>
+            如果有任何疑問或查詢之前的訂單，麻煩請來信<a
+              href="mailto:sample@sample.com"
+              >sample@sample.com</a
+            >
+          </p>
+        </div>
+      </div>
+    </section>
+    <footer class="footer outer">
+      <div class="container c-white">COPYRIGHT © 2021 台北一日遊</div>
+    </footer>
+  </body>
 </html>

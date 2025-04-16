@@ -1,6 +1,9 @@
+import User from "./user.js";
+// import * as userStore from "./user-store.js";
 import memberModal from "./member-modal.js";
 import attractionPage from "./attraction-page.js";
 import bookingSystem from "./booking-system.js";
+import orderSyetem from "./order-system.js";
 
 const indexContentMrtList = document.querySelector(".index-content-mrt-list");
 const indexContentMrtLeft = document.querySelector(
@@ -51,10 +54,14 @@ const menuItemBooking = document.querySelector(".menu-item-booking");
 const bookingInfoContainer = document.querySelector(".booking-info-container");
 const bookingContactName = document.querySelector(".booking-contact-name");
 const bookingContactEmail = document.querySelector(".booking-contact-email");
+const bookingContactPhonenum = document.querySelector(
+  ".booking-contact-phonenum"
+);
 const bookingConfirmTotal = document.querySelector(".booking-confirm-total");
 const bookingContact = document.querySelector(".booking-contact");
 const bookingPayment = document.querySelector(".booking-payment");
 const bookingConfirm = document.querySelector(".booking-confirm");
+const bookingConfirmBtn = document.querySelector(".booking-confirm-btn");
 // 待節點插入後，node再綁定此變數
 let attractionContentSwiperOuter;
 
@@ -324,8 +331,9 @@ function addObserver(dom, keyword) {
 
 document.addEventListener("DOMContentLoaded", async (e) => {
   try {
-    let status = await signinCheck();
-    if (status) {
+    const user = await new User().init();
+    // let status = await signinCheck();
+    if (user.id) {
       menuItemMember.textContent = "登出系統";
     }
     // 確定網址是否符合/attraction/:id
@@ -374,7 +382,7 @@ document.addEventListener("DOMContentLoaded", async (e) => {
         "attraction-content-pagination-element-active"
       );
     } else if (currentUrl === "/booking") {
-      if (!status) {
+      if (!user.id) {
         window.location.href = "/";
       }
       const domList = {
@@ -384,9 +392,23 @@ document.addEventListener("DOMContentLoaded", async (e) => {
         bookingPayment: bookingPayment,
         bookingConfirm: bookingConfirm,
       };
-      bookingSystem.showBooking(domList, status);
-      bookingContactName.value = status["data"]["name"];
-      bookingContactEmail.value = status["data"]["email"];
+      await user.getBookingData();
+      bookingSystem.showBooking(domList, user);
+      bookingContactName.value = user.name;
+      bookingContactEmail.value = user.email;
+      orderSyetem.init(user);
+    } else if (currentUrl === "/thankyou") {
+      const urlParms = new URLSearchParams(window.location.search);
+      const num = urlParms.get("number");
+      if (!num) {
+        window.location.href = "/";
+      }
+      await user.getOrderData(num);
+      if (Object.keys(user.order).length) {
+        orderSyetem.renderThankYouPage(user.order);
+      } else {
+        window.location.href = "/";
+      }
     }
   } catch (error) {
     throw new Error(error.message);
@@ -626,4 +648,8 @@ if (attractionContentSelectBtn) {
       console.log(error);
     }
   });
+}
+
+if (bookingConfirmBtn) {
+  bookingConfirmBtn.addEventListener("click", orderSyetem.confirmClickHandle);
 }

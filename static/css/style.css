@@ -29,6 +29,16 @@
   flex-direction: column;
 }
 
+/*通用margin設定*/
+.margin-b-sm {
+  margin-bottom: 12px;
+}
+.margin-b-md {
+  margin-bottom: 20px;
+}
+.margin-b-lg {
+  margin-bottom: 25px;
+}
 
 /*header*/
 .header-container {
@@ -247,13 +257,15 @@
   font-weight: 700;
 }
 
-/*attraction-header*/ /*booking-header*/
+/*attraction-header*/ /*booking-header*/ /*thankyou-header*/
 .attraction-header,
-.booking-header {
+.booking-header,
+.thankyou-header {
   position: relative;
 }
 .attraction-header::after,
-.booking-header::after {
+.booking-header::after,
+.thankyou-header::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -483,19 +495,13 @@
 .booking-payment-container,
 .booking-confirm-container {
   padding: 40px 10px;
-}
-
-.booking-info-container,
-.booking-contact-container,
-.booking-payment-container,
-.booking-confirm-container {
   width: 100%;
-  /* max-width: 100%; */
 }
 
 .booking-confirm-container {
   justify-content: end;
   position: relative;
+  align-items: end;
 }
 
 @media screen and (min-width: 1200px) {
@@ -504,7 +510,7 @@
   .booking-payment-container,
   .booking-confirm-container {
     width: 81.66%;
-    max-width: 1200px
+    max-width: 1200px;
   }
 }
 
@@ -656,6 +662,73 @@
   cursor: pointer;
 }
 
+.booking-confirm-error-msg p {
+  color: red;
+  padding: 10px 20px;
+}
+
 .booking-hide {
   display: none;
+}
+
+.thankyou {
+  padding: 20px 10px;
+}
+
+.thankyou-hide {
+  display: none;
+}
+
+.thankyou-container {
+  line-height: 1.5;
+}
+
+@media screen and (min-width: 1200px) {
+  .thankyou-container {
+    width: 81.66%;
+    max-width: 1200px;
+  }
+}
+
+.thankyou-container .card {
+  padding: 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+
+.thankyou-container .card-header {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 12px;
+}
+
+.thankyou-container .card-body {
+  padding: 12px;
+}
+
+.thankyou-order-img {
+  width: 150px;
+  height: 100px;
+  margin-bottom: 12px;
+}
+
+@media screen and (min-width: 576px) {
+  .thankyou-order-img {
+    margin-bottom: 0px;
+    margin-right: 12px;
+  }
+}
+
+.thankyou-content {
+  overflow-y: auto;
+}
+
+.thankyou-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 576px) {
+  .thankyou-card-content {
+    flex-direction: row;
+  }
 }
