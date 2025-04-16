@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from typing import Annotated
-from datetime import datetime
+from datetime import datetime,timezone,timedelta
 from dotenv import load_dotenv
 import random
 import string
@@ -27,7 +27,8 @@ class Order_data(BaseModel):
 
 
 def create_order_id():
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
+    tz = timezone(timedelta(hours=8))
+    now = datetime.now(tz).strftime("%Y%m%d%H%M%S")
     random_num = "".join(random.choices(string.digits, k=4))
     return f"{now}{random_num}"
 
