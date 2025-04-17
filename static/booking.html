@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="https://js.tappaysdk.com/tpdirect/v5.1.0"></script>
     <script type="module" defer src="/static/js/all.js"></script>
     <title>Booking</title>
   </head>
@@ -125,7 +126,7 @@
       </div>
     </header>
     <section class="booking-info outer">
-      <div class="container booking-info-container d-flex-column "></div>
+      <div class="container booking-info-container d-flex-column"></div>
     </section>
     <section class="booking-contact outer booking-hide">
       <div class="container booking-contact-container d-flex-column">
@@ -133,7 +134,12 @@
         <form class="booking-contact-form">
           <div class="booking-contact-form-item">
             <label for="contact-name">聯絡姓名：</label>
-            <input type="text" id="contact-name" class="booking-contact-name" />
+            <input
+              type="text"
+              id="contact-name"
+              class="booking-contact-name"
+              name="name"
+            />
           </div>
           <div class="booking-contact-form-item">
             <label for="contact-email">連絡信箱：</label>
@@ -141,6 +147,7 @@
               type="email"
               id="contact-email"
               class="booking-contact-email"
+              name="email"
             />
           </div>
           <div class="booking-contact-form-item">
@@ -149,6 +156,7 @@
               type="text"
               id="contact-phonenum"
               class="booking-contact-phonenum"
+              name="phone"
             />
           </div>
         </form>
@@ -163,21 +171,22 @@
         <form class="booking-payment-form">
           <div class="booking-payment-form-item">
             <label for="payment-card-num">卡片號碼：</label>
-            <input type="text" id="payment-card-num" placeholder="**** **** **** ****"/>
+            <div class="tpfield" id="card-number"></div>
           </div>
           <div class="booking-payment-form-item">
             <label for="payment-card-exp">過期時間：</label>
-            <input type="text" id="payment-card-exp" placeholder="MM / YY"/>
+            <div class="tpfield" id="card-expiration-date"></div>
           </div>
           <div class="booking-payment-form-item">
             <label for="payment-card-cvv">驗證密碼：</label>
-            <input type="text" id="payment-card-cvv" placeholder="CVV"/>
+            <div class="tpfield" id="card-ccv"></div>
           </div>
         </form>
       </div>
     </section>
     <section class="booking-confirm outer booking-hide">
       <div class="container booking-confirm-container">
+        <div class="booking-confirm-error-msg fz-4"></div>
         <div class="booking-confirm-content d-flex-column">
           <p class="fw-bold booking-confirm-total-outer">
             總價：新台幣 <span class="booking-confirm-total"></span> 元

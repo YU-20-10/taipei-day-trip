@@ -1,5 +1,6 @@
 function bookingSystem() {
   let model = {
+    bookingData: {},
     getBookingData: async function () {
       let token = localStorage.getItem("taipei_day_trip");
       try {
@@ -9,7 +10,9 @@ function bookingSystem() {
             Authorization: `Bearer ${token}`,
           },
         });
-        return response.json();
+        let result = response.json();
+        this.bookingData = result;
+        return result;
       } catch (error) {
         throw error;
       }
@@ -154,26 +157,21 @@ function bookingSystem() {
     },
   };
   let controller = {
-    showBooking: async (domList, userData) => {
+    showBooking: async (domList, user) => {
       try {
-        let bookingData = await model.getBookingData();
-        if (bookingData["data"]) {
+        if (Object.keys(user.booking).length) {
           view.renderBookingCard(
-            bookingData["data"],
-            userData["data"],
+            user.booking,
+            user,
             domList.bookingInfoContainer
           );
           domList.bookingContact.classList.remove("booking-hide");
           domList.bookingPayment.classList.remove("booking-hide");
           domList.bookingConfirm.classList.remove("booking-hide");
-          domList.bookingConfirmTotal.textContent =
-            bookingData["data"]["price"];
+          domList.bookingConfirmTotal.textContent = user.booking.price;
           controller.addClickListener("booking-info-del-btn");
         } else {
-          view.renderBookingText(
-            userData["data"],
-            domList.bookingInfoContainer
-          );
+          view.renderBookingText(user, domList.bookingInfoContainer);
 
           domList.bookingInfoContainer.style.height = `${
             window.innerHeight - 63.2 - 113.2

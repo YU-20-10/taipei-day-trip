@@ -104,6 +104,23 @@ database_connect_cursor = database_connect.cursor()
 # database_connect_cursor.execute("SELECT user_id, COUNT(*) AS cnt FROM bookings GROUP BY user_id HAVING cnt > 1")
 # data = database_connect_cursor.fetchall()
 # print(data)
+
+# table orders
+database_connect_cursor.execute(
+    "CREATE TABLE orders (number VARCHAR(20) PRIMARY KEY,user_id BIGINT NOT NULL,price BIGINT NOT NULL,trip TEXT,date DATE NOT NULL,time VARCHAR(50) NOT NULL,status TINYINT,pay_record VARCHAR(50),FOREIGN KEY (user_id) REFERENCES users(id))"
+)
+
+# database_connect_cursor.execute(
+#     "ALTER TABLE orders MODIFY user_id BIGINT NOT NULL"
+# )
+# database_connect_cursor.execute(
+#     "ALTER TABLE orders MODIFY booking_id BIGINT NOT NULL"
+# )
+
+# database_connect_cursor.execute(
+#     "ALTER TABLE orders ADD pay_record VARCHAR(50)"
+# )
+
 database_connect.commit()
 database_connect_cursor.close()
 database_connect.close()

@@ -8,7 +8,7 @@ from router.attraction_api import attraction_api
 from router.mrt_api import mrt_api
 from router.user_api import user_api
 from router.booking_api import booking_api, CustomOauthExpection
-
+from router.order_api import order_api
 
 app = FastAPI()
 
@@ -19,6 +19,7 @@ app.include_router(attraction_api)
 app.include_router(mrt_api)
 app.include_router(user_api)
 app.include_router(booking_api)
+app.include_router(order_api)
 
 
 @app.exception_handler(CustomOauthExpection)
