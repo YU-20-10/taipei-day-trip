@@ -43,7 +43,6 @@ function orderSyetem() {
       const text = document.createTextNode(message);
       p.appendChild(text);
       bookingConfirmErrorMsg.appendChild(p);
-      // bookingConfirmErrorMsg.textContent = "卡片資訊有誤，請確認後再送出";
     },
     hideErrorMsg: () => {
       const bookingConfirmErrorMsg = document.querySelector(
@@ -59,13 +58,56 @@ function orderSyetem() {
       domList.orderTime.textContent = `${orderData.trip.date} ${
         orderData.trip.time === "morning" ? "09:00-16:00" : "14:00-21:00"
       }`;
-      //  `${data["time"] === "morning" ? "早上 9 點到下午 4 點": "下午 2 點到晚上 9 點"}`
     },
   };
   let controller = {
     init: (userData) => {
       TPDirect.setupSDK(model.sdkData.id, model.sdkData.key, "sandbox");
-      TPDirect.card.setup("#cardview-container");
+      let fields = {
+        number: {
+          element: "#card-number",
+          placeholder: "**** **** **** ****",
+        },
+        expirationDate: {
+          element: "#card-expiration-date",
+          placeholder: "MM / YY",
+        },
+        ccv: {
+          element: "#card-ccv",
+          placeholder: "ccv",
+        },
+      };
+      TPDirect.card.setup({
+        fields: fields,
+        styles: {
+          input: {
+            color: "gray",
+          },
+          "input.ccv": {
+            "font-size": "16px",
+          },
+          "input.expiration-date": {
+            "font-size": "16px",
+          },
+          "input.card-number": {
+            "font-size": "16px",
+          },
+          ":focus": {
+            color: "black",
+          },
+          ".valid": {
+            color: "green",
+          },
+          ".invalid": {
+            color: "red",
+          },
+          "@media screen and (max-width: 400px)": {
+            input: {
+              color: "orange",
+            },
+          },
+        },
+      });
       TPDirect.card.onUpdate(controller.cardUpdateHandle);
       model.userData = userData;
     },

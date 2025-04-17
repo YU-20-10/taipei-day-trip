@@ -462,6 +462,7 @@
 .attraction-content-form-date {
   border-width: 0;
   padding: 5px 10px;
+  background-color: white;
 }
 
 .attraction-content-form-radio {
@@ -625,6 +626,18 @@
 .booking-payment-form-item {
   display: flex;
   align-items: center;
+}
+
+.booking-payment-form-item {
+  height: 38px;
+}
+
+.booking-payment-form-item > .tpfield {
+  height: 38px;
+  width: 200px;
+  border: 1px solid #e8e8e8;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .booking-contact-form-item + .booking-contact-form-item {
