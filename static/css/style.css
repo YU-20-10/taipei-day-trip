@@ -1,65 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("base.css");
 @import url("font.css");
-@import url("modal.css");
-
-/*共通容器設定*/
-.outer {
-  display: flex;
-  justify-content: center;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-}
-@media screen and (min-width: 1200px) {
-  .container {
-    max-width: 1200px;
-  }
-}
-
-/*通用flex設定*/
-.d-flex-row {
-  display: flex;
-  align-items: center;
-}
-.d-flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-/*通用margin設定*/
-.margin-b-sm {
-  margin-bottom: 12px;
-}
-.margin-b-md {
-  margin-bottom: 20px;
-}
-.margin-b-lg {
-  margin-bottom: 25px;
-}
-
-/*header*/
-.header-container {
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-}
-
-.header-menu {
-  display: flex;
-  align-items: center;
-}
-
-.header-menu-item {
-  padding: 10px;
-}
-
-.header-menu-item-link:hover {
-  color: #000;
-}
+@import url("layout.css");
+@import url("utilities.css");
+@import url("components/modal.css");
+@import url("components/loading.css");
+@import url("components/header.css");
 
 /*index-header*/
 .index-header {
@@ -127,6 +73,10 @@
   cursor: pointer;
 }
 
+.index-banner-search-btn:hover {
+  background-color: #aaddee;
+}
+
 .index-banner-search-btn:active {
   background-color: #1b6172;
 }
@@ -177,6 +127,11 @@
   display: none;
 }
 
+.index-content-mrt-list .component-loading-placeholder-mrt-item {
+  width: 48px;
+  height: 24px;
+}
+
 .index-content-mrt-link {
   display: block;
   padding: 5px 15px;
@@ -218,6 +173,10 @@
   }
 }
 
+.index-content-list .component-loading-placeholder-card {
+  min-height: 241px;
+}
+
 .index-content-list .card-img {
   min-height: 197px;
   min-width: 270px;
@@ -247,32 +206,9 @@
   padding: 10px;
 }
 
-/* index-footer */ /*attraction-footer*/
-.index-footer,
-.attraction-footer,
-.footer {
-  background-color: #757575;
-  padding-top: 45px;
-  padding-bottom: 45px;
-  font-weight: 700;
-}
-
-/*attraction-header*/ /*booking-header*/ /*thankyou-header*/
-.attraction-header,
-.booking-header,
-.thankyou-header {
-  position: relative;
-}
-.attraction-header::after,
-.booking-header::after,
-.thankyou-header::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background-color: #e8e8e8;
+.index-content-list .component-loading-placeholder-card-text {
+  min-height: 24px;
+  width: 48px;
 }
 
 /* attraction-content */
@@ -351,6 +287,11 @@
     width: 50%;
     margin-right: 30px;
   }
+}
+
+.attraction-content-placeholder-img {
+  min-width: 100%;
+  min-height: 350px;
 }
 
 .attraction-content-swiper-outer {
@@ -477,6 +418,15 @@
   border-width: 0px;
   border-radius: 5px;
   cursor: pointer;
+  position: relative;
+}
+
+.attraction-content-select-btn:hover {
+  background-color: #aaddee;
+}
+
+.attraction-content-select-btn .component-loading {
+  left: 115%;
 }
 
 .booking-contact,
@@ -610,12 +560,17 @@
   background-color: transparent;
   align-self: flex-end;
   cursor: pointer;
+  position: relative;
 }
 
 @media screen and (min-width: 992px) {
   .booking-info-del-btn {
     align-self: auto;
   }
+}
+
+.booking-info-del-btn .component-loading {
+  left: -20px;
 }
 
 .booking-contact-header {
@@ -673,6 +628,16 @@
   border-width: 0px;
   border-radius: 5px;
   cursor: pointer;
+  position: relative;
+}
+
+.booking-confirm-btn:hover {
+  background-color: #aaddee;
+}
+
+.booking-confirm-btn .component-loading {
+  left: -30px;
+  top: -10px;
 }
 
 .booking-confirm-error-msg p {
@@ -744,4 +709,147 @@
   .thankyou-card-content {
     flex-direction: row;
   }
+}
+
+.member-center-container {
+  width: 100%;
+  padding: 40px 10px;
+}
+
+.member-center-container .card {
+  padding: 12px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  margin-bottom: 25px;
+}
+
+.member-center-container .card-header {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.member-center-container .card-body {
+  padding: 12px;
+}
+
+.member-center-container .card-footer {
+  border-top: 1px solid #e8e8e8;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.member-center-user-data-header,
+.member-center-order-data-header {
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.member-center-user-data-header::after,
+.member-center-order-data-header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: #e8e8e8;
+}
+
+.member-center-user-data-form {
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+
+.member-center-form-item {
+  margin-bottom: 15px;
+  font-weight: 700;
+  font-size: 19px;
+}
+
+.member-center-form-input {
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.member-center-form-input-disable {
+  border: none;
+  background-color: transparent;
+}
+
+.member-center-order-data-list {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.member-center-btn-list {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.member-center-btn {
+  padding: 8px 16px;
+  background-color: #448899;
+  border-width: 0px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+.member-center-btn:hover {
+  background-color: #aaddee;
+}
+
+.member-center-btn + .member-center-btn {
+  margin-left: 20px;
+}
+
+.member-center-user-data-message {
+  margin-left: 20px;
+  color: red;
+  font-weight: 700;
+  font-size: 19px;
+}
+
+.member-center-order-card-body-header {
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #757575;
+}
+
+.member-center-order-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-center-order-card-repay-link {
+  display: block;
+  color: white;
+  padding: 10px;
+}
+
+.member-center-order-card-repay-outer {
+  background-color: #448899;
+  border-radius: 5px;
+}
+
+.member-center-order-card-repay-outer:hover {
+  background-color: #aaddee;
+}
+
+.member-center-order-card-repay-no-hover:hover {
+  background-color: #aaddee;
+}
+
+.member-center-order-card-repay-link-not-allow {
+  cursor: not-allowed;
+  background-color: #aaddee;
+  border-radius: 5px;
 }

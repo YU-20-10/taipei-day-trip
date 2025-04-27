@@ -1,3 +1,5 @@
+import loading from "./components/loading.js";
+
 function orderSyetem() {
   let model = {
     sdkData: {
@@ -16,10 +18,59 @@ function orderSyetem() {
       let phoneCheck = phoneReg.test(formData?.["phone"]);
       return phoneCheck ? true : false;
     },
-    postOrderData: async function (data) {
+    getPostOrderData: (mode, data) => {
+      let orderData = {};
+      if (mode === "repay") {
+        orderData = {
+          price: data.price,
+          trip: {
+            attraction: {
+              id: data.trip.id,
+              name: data.trip.name,
+              address: data.trip.address,
+              image: data.trip.image,
+            },
+            date: data.trip.date,
+            time: data.trip.time,
+          },
+        };
+      } else {
+        orderData = {
+          price: data.price,
+          trip: {
+            attraction: data.attraction,
+            date: data.date,
+            time: data.time,
+          },
+        };
+      }
+      return orderData;
+    },
+    postOrderData: async function (number, data) {
+      let url = "/api/orders";
+      if (number) {
+        url = `/api/orders/${number}`;
+      }
       try {
         const token = localStorage.getItem("taipei_day_trip");
-        const response = await fetch("/api/orders", {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+        return response.json();
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    postRepayOrderData: async function (number, data) {
+      try {
+        const token = localStorage.getItem("taipei_day_trip");
+        const response = await fetch(`/api/orders/${number}`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -118,41 +169,63 @@ function orderSyetem() {
         model.cardDataCheck = false;
       }
     },
-    confirmClickHandle: async (e) => {
+    confirmClickHandle: async (loadingDom, num) => {
       view.hideErrorMsg();
       const bookingContactForm = document.querySelector(
         ".booking-contact-form"
       );
+
       const contactData = model.getFormData(bookingContactForm);
       let formCheck = model.formDataVilidation(contactData);
-
-      if (!formCheck) {
-        view.showErrorMsg("聯絡電話未輸入或輸入錯誤");
-      }
-      if (!model.cardDataCheck) {
-        view.showErrorMsg("卡片資訊有誤，請確認後再送出");
-      }
-      if (formCheck && model.cardDataCheck) {
-        TPDirect.card.getPrime(async (result) => {
-          const data = {
-            prime: result["card"]["prime"],
-            order: {
-              price: model.userData.booking.price,
-              trip: {
-                attraction: model.userData.booking.attraction,
-                date: model.userData.booking.date,
-                time: model.userData.booking.time,
-              },
-            },
-            contact: contactData,
-          };
-          const res = await model.postOrderData(data);
-          if (res?.data?.payment?.status === 0) {
-            window.location.href = `/thankyou?number=${res?.data?.number}`;
+      loading.show(loadingDom);
+      const minLoading = 300;
+      const delay = (time) =>
+        new Promise((resolve) => setTimeout(resolve, time));
+      const start = Date.now();
+      try {
+        if (!formCheck) {
+          view.showErrorMsg("聯絡電話未輸入或輸入錯誤");
+          return;
+        }
+        if (!model.cardDataCheck) {
+          view.showErrorMsg("卡片資訊有誤，請確認後再送出");
+          return;
+        }
+        if (formCheck && model.cardDataCheck) {
+          let orderData = {};
+          if (num) {
+            orderData = model.getPostOrderData("repay", model.userData.order);
           } else {
-            alert("付款失敗", res?.data?.payment?.message);
+            orderData = model.getPostOrderData("pay", model.userData.booking);
           }
-        });
+
+          TPDirect.card.getPrime(async (result) => {
+            const data = {
+              prime: result["card"]["prime"],
+              order: orderData,
+              contact: contactData,
+            };
+
+            const res = await model.postOrderData(num, data);
+
+            if (res?.data?.payment?.status === 0) {
+              let apiUseTime = Date.now() - start;
+              let waitTime = Math.max(0, minLoading - apiUseTime);
+              await delay(waitTime);
+              loading.hide(loadingDom);
+              window.location.href = `/thankyou?number=${res?.data?.number}`;
+            } else {
+              alert("付款失敗,請確認信用卡號碼或卡片是否為可使用狀態");
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        let apiUseTime = Date.now() - start;
+        let waitTime = Math.max(0, minLoading - apiUseTime);
+        await delay(waitTime);
+        loading.hide(loadingDom);
       }
     },
     renderThankYouPage: (orderData) => {

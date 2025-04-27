@@ -1,3 +1,5 @@
+import loading from "./loading.js";
+
 function memberModal() {
   let modal = {
     formData: {},
@@ -89,49 +91,62 @@ function memberModal() {
     },
   };
   let controller = {
-    showModal: (bodyDom, elDom, messageDom) => {
+    showModal: (elDom, messageDom) => {
+      const bodyDom = document.querySelector("body");
       view.messageInit(messageDom);
       view.backdrop(bodyDom);
       view.show(elDom);
-      controller.clickHide("modal-backdrop", bodyDom, elDom);
+      controller.clickHide("modal-backdrop", elDom);
     },
-    hideModal: (bodyDom, elDom) => {
+    hideModal: (elDom) => {
+      const bodyDom = document.querySelector("body");
       view.backdropRemove(bodyDom);
       view.hide(elDom);
     },
-    formDataHandle: async (mode, formDom, messageDom) => {
+    formDataHandle: async (mode, formDom, messageDom, loadingDom) => {
       view.messageInit(messageDom);
+      loading.show(loadingDom);
       modal.getFormData(formDom);
       let check = modal.formDataVilidation(mode);
-      if (mode === "signin") {
-        if (check) {
-          try {
+
+      // 使loading平滑顯示/隱藏
+      const minLoading = 200;
+      const delay = (time) =>
+        // 使用Promise包裝setTimeout
+        new Promise((resolve) => setTimeout(resolve, time));
+      const start = Date.now();
+
+      try {
+        if (mode === "signin") {
+          if (check) {
             let result = await modal.putData("/api/user/auth", modal.formData);
-          } catch (error) {
-            console.error(error);
-            view.message(messageDom, error.message);
+          } else {
+            view.message(messageDom, "信箱或密碼輸入錯誤");
           }
-        } else {
-          view.message(messageDom, "信箱或密碼輸入錯誤");
-        }
-      } else if (mode === "signup") {
-        if (check) {
-          try {
+        } else if (mode === "signup") {
+          if (check) {
             let result = await modal.postData("/api/user", modal.formData);
             view.message(messageDom, "註冊成功");
-          } catch (error) {
-            console.error(error);
-            view.message(messageDom, error.message);
+          } else {
+            view.message(messageDom, "姓名或信箱或密碼格式錯誤");
           }
-        } else {
-          view.message(messageDom, "姓名或信箱或密碼格式錯誤");
         }
+      } catch (error) {
+        console.error(error);
+        view.message(messageDom, error.message);
+      } finally {
+        // 使loading平滑顯示/隱藏
+        let apiUseTime = Date.now() - start;
+        // Math.max()確保不會是負值
+        let waitTime = Math.max(0, minLoading - apiUseTime);
+        await delay(waitTime);
+        loading.hide(loadingDom);
       }
     },
-    clickHide: (className, bodyDom, elDom) => {
+    clickHide: (className, elDom) => {
       let dom = document.querySelector(`.${className}`);
       dom.addEventListener("click", (e) => {
-        controller.hideModal(bodyDom, elDom);
+        controller.hideModal(elDom);
       });
     },
   };

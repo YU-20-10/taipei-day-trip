@@ -1,13 +1,11 @@
 import mysql.connector
 
-from db_config import database
-
 
 class Mrt_data_opertation:
-    def get_mrt_data():
+    def get_mrt_data(database_connect):
+        database_connect_cursor = None
         try:
             mrt_data = []
-            database_connect = database()
             database_connect_cursor = database_connect.cursor()
             database_connect_cursor.execute(
                 "SELECT attractions.mrt_id,mrt.name FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id"

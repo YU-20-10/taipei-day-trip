@@ -12,7 +12,6 @@
 }
 
 .member-modal {
-  display: none;
   position: absolute;
   top: 80px;
   width: 94%;
@@ -25,6 +24,10 @@
   border-color: transparent;
   border-radius: 5px;
   z-index: 3;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transform: scale(0.9) translate(0, -50px);
 }
 
 .member-modal-header {
@@ -63,6 +66,11 @@
   border-radius: 5px;
   margin-bottom: 10px;
   cursor: pointer;
+  position: relative;
+}
+
+.member-modal-btn .component-loading {
+  right: 20px;
 }
 
 .member-modal-btn:hover {
@@ -74,7 +82,10 @@
 }
 
 .modal-show {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, 0);
+  transition: transform 0.3s ease-out;
 }
 
 .member-signin-message {

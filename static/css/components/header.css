@@ -1,0 +1,82 @@
+/*header*/
+
+.header-container {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.header-menu-btn {
+  border-radius: 5px;
+  padding: 4px 12px;
+  border: 1px solid #f8f8f8;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 576px) {
+  .header-menu-btn {
+    display: none;
+  }
+}
+
+.header-menu-btn:hover {
+  border: 1px solid #666666;
+  background-color: #f8f8f8;
+}
+
+.header-menu-btn .bi-list {
+  font-size: 24px;
+}
+
+.header-menu {
+  display: none;
+  position: absolute;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  z-index: 5;
+  background-color: white;
+  text-align: center;
+}
+
+.header-menu-show {
+  display: flex;
+  flex-direction: column;
+}
+
+@media screen and (min-width: 576px) {
+  .header-menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: static;
+    width: auto;
+    background-color: transparent;
+    text-align: start;
+  }
+}
+
+.header-menu-item {
+  padding: 10px;
+  border-top: 2px solid #f8f8f8;
+}
+
+@media screen and (min-width: 576px) {
+  .header-menu-item {
+    border: none;
+  }
+}
+
+.header-menu-item-link:hover {
+  color: #000;
+  background: #f8f8f8;
+}
+
+.header-component-loading-placeholder {
+  width: 64px;
+  height: 24px;
+  margin-left: 10px;
+  margin-right: 10px;
+}

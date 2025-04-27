@@ -1,9 +1,10 @@
-import User from "./user.js";
-// import * as userStore from "./user-store.js";
-import memberModal from "./member-modal.js";
+import User from "./classes/user.js";
+import header from "./components/header.js";
+import memberModal from "./components/member-modal.js";
 import attractionPage from "./attraction-page.js";
 import bookingSystem from "./booking-system.js";
 import orderSyetem from "./order-system.js";
+import memberCenter from "./member-center.js";
 
 const indexContentMrtList = document.querySelector(".index-content-mrt-list");
 const indexContentMrtLeft = document.querySelector(
@@ -16,18 +17,13 @@ const indexContentList = document.querySelector(".index-content-list");
 const indexBannerSearch = document.querySelector(".index-banner-search");
 const indexBannerSearchBtn = document.querySelector(".index-banner-search-btn");
 const menuItemMember = document.querySelector(".menu-item-member");
-const attractionContentTitleOuter = document.querySelector(
-  ".attraction-content-title-outer"
-);
+const menuItemMemberCenter = document.querySelector(".menu-item-member-center");
+const headerMenuBtn = document.querySelector(".header-menu-btn");
 const attractionContentFormRadio = document.querySelectorAll(
   ".attraction-content-form-radio"
 );
 const attractionContentFormPrice = document.querySelector(
   ".attraction-content-form-price"
-);
-const attractionContentImg = document.querySelector(".attraction-content-img");
-const attractionContentBottom = document.querySelector(
-  ".attraction-content-bottom"
 );
 const attractionContentSwiperLeftBtn = document.querySelector(
   ".attraction-content-swiper-left-btn"
@@ -44,26 +40,10 @@ const attractionContentSelectBtn = document.querySelector(
 const attractionContentForm = document.querySelector(
   ".attraction-content-form"
 );
-const memberSignin = document.querySelector(".member-signin");
-const memberSigninForm = document.querySelector(".member-signin-form");
-const memberSigninGoBtn = document.querySelector(".member-signin-go-btn");
-const memberSignup = document.querySelector(".member-signup");
-const memberSignupForm = document.querySelector(".member-signup-form");
-const memberSignupGoBtn = document.querySelector(".member-signup-go-btn");
 const menuItemBooking = document.querySelector(".menu-item-booking");
-const bookingInfoContainer = document.querySelector(".booking-info-container");
-const bookingContactName = document.querySelector(".booking-contact-name");
-const bookingContactEmail = document.querySelector(".booking-contact-email");
-const bookingContactPhonenum = document.querySelector(
-  ".booking-contact-phonenum"
-);
-const bookingConfirmTotal = document.querySelector(".booking-confirm-total");
-const bookingContact = document.querySelector(".booking-contact");
-const bookingPayment = document.querySelector(".booking-payment");
-const bookingConfirm = document.querySelector(".booking-confirm");
+
 const bookingConfirmBtn = document.querySelector(".booking-confirm-btn");
 // 待節點插入後，node再綁定此變數
-let attractionContentSwiperOuter;
 
 let nextPage = 0;
 let timeout = 0;
@@ -72,6 +52,7 @@ let isLoading = false;
 let currentUrl = window.location.pathname;
 // slide當前的index
 let slideIndex = 0;
+const urlParms = new URLSearchParams(window.location.search);
 
 async function getApiData(url) {
   try {
@@ -172,87 +153,6 @@ function createAttractionEl(attractionAllData, replaceOrNot) {
   }
 }
 
-function createAttractionPageEl(attractionData) {
-  const classObj = {
-    title: ["attraction-content-title", "fz-3", "fw-bold"],
-    category: ["fw-medium"],
-    swiperOuter: ["attraction-content-swiper-outer"],
-    swiperEl: ["attraction-content-swiper-element"],
-    swiperLeft: ["attraction-content-swiper-left-btn"],
-    swiperright: ["attraction-content-swiper-right-btn"],
-    pagination: ["attraction-content-pagination-element"],
-  };
-
-  let titleH2 = document.createElement("h2");
-  let titleText = document.createTextNode(attractionData?.["name"]);
-  let categoryP = document.createElement("p");
-  let categoryText = document.createTextNode(
-    `${attractionData?.["category"]} at ${attractionData?.["mrt"]}`
-  );
-  let descriptionP = document.createElement("p");
-  let descriptionText = document.createTextNode(
-    attractionData?.["description"]
-  );
-  let addressDiv = document.createElement("div");
-  let addressTitleH3 = document.createElement("h3");
-  let addressTitleText = document.createTextNode("景點地址：");
-  let addressTextP = document.createElement("p");
-  let addressTextText = document.createTextNode(attractionData?.["address"]);
-  let transportDiv = document.createElement("div");
-  let transportTitleH3 = document.createElement("h3");
-  let transportTitleText = document.createTextNode("交通方式：");
-  let transportTextP = document.createElement("p");
-  let transportTextText = document.createTextNode(
-    attractionData?.["transport"]
-  );
-  titleH2.appendChild(titleText);
-  titleH2.classList.add(...classObj["title"]);
-  categoryP.appendChild(categoryText);
-  categoryP.classList.add(...classObj["category"]);
-  attractionContentTitleOuter.append(titleH2, categoryP);
-  descriptionP.appendChild(descriptionText);
-  addressTitleH3.appendChild(addressTitleText);
-  addressTextP.appendChild(addressTextText);
-  addressDiv.append(addressTitleH3, addressTextP);
-  transportTitleH3.appendChild(transportTitleText);
-  transportTextP.appendChild(transportTextText);
-  transportDiv.append(transportTitleH3, transportTextP);
-  attractionContentBottom.append(descriptionP, addressDiv, transportDiv);
-  let swiperOuterDiv = document.createElement("div");
-  attractionData?.["images"]?.forEach((image, index) => {
-    let swiperEl = document.createElement("div");
-    let pagination = document.createElement("div");
-    swiperEl.style.background = `no-repeat center/cover url(${image})`;
-    swiperEl.classList.add(...classObj["swiperEl"]);
-    swiperEl.dataset.index = index;
-    pagination.classList.add(...classObj["pagination"]);
-    pagination.dataset.img = index;
-    swiperOuterDiv.appendChild(swiperEl);
-    attractionContentSwiperPagination.appendChild(pagination);
-  });
-  swiperOuterDiv.classList.add(...classObj["swiperOuter"]);
-  attractionContentImg.append(swiperOuterDiv);
-  attractionContentSwiperOuter = swiperOuterDiv;
-  swiperOuterDiv.addEventListener("scroll", (e) => {
-    clearTimeout(timeout);
-    timeout = 0;
-    timeout = setTimeout(() => {
-      // 當前位置/窗口寬度，四捨五入
-      let currentIndex = Math.round(
-        swiperOuterDiv.scrollLeft / attractionContentSwiperOuter.offsetWidth
-      );
-      slideIndex = currentIndex;
-      attractionContentSwiperPagination.childNodes.forEach((el, index) => {
-        if (index === slideIndex) {
-          el.classList.add("attraction-content-pagination-element-active");
-        } else {
-          el.classList.remove("attraction-content-pagination-element-active");
-        }
-      });
-    }, 200);
-  });
-}
-
 async function signinCheck() {
   let token = localStorage.getItem("taipei_day_trip");
   try {
@@ -332,10 +232,8 @@ function addObserver(dom, keyword) {
 document.addEventListener("DOMContentLoaded", async (e) => {
   try {
     const user = await new User().init();
-    // let status = await signinCheck();
-    if (user.id) {
-      menuItemMember.textContent = "登出系統";
-    }
+    header.init(user, menuItemMember, menuItemMemberCenter);
+
     // 確定網址是否符合/attraction/:id
     // (id必須為數字)(網址列後方可以是/結尾或是不加其他東西結尾)
     // window.location.href取得的網址不包含查詢字串
@@ -345,6 +243,15 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       // 如果載入的是首頁
       let mrtData = {};
       let attractionData = {};
+      const domList = {
+        indexContentMrtListComponentLoadingPlaceholderList:
+          document.querySelectorAll(
+            ".index-content-mrt-list-component-loading-placeholder"
+          ),
+        indexContentListComponentLoadingPlaceholder: document.querySelectorAll(
+          ".index-content-list-component-loading-placeholder"
+        ),
+      };
       const data = await Promise.all([
         getApiData("/api/mrts"),
         getApiData("/api/attractions?page=0"),
@@ -356,12 +263,20 @@ document.addEventListener("DOMContentLoaded", async (e) => {
         mrtData.data.forEach((mrt) => {
           createMrtLiEl(mrt);
         });
+        domList.indexContentMrtListComponentLoadingPlaceholderList.forEach(
+          (el) => {
+            el.remove();
+          }
+        );
       }
       if (Object.keys(attractionData).length > 0) {
         // nextPage變更
         nextPage = attractionData["nextPage"];
         // 畫面渲染
         createAttractionEl(attractionData["data"], false);
+        domList.indexContentListComponentLoadingPlaceholder.forEach((el) => {
+          el.remove();
+        });
       }
       // 監聽最後一個node
       const indexContentAttraction = document.querySelectorAll(
@@ -377,7 +292,26 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       // 如果載入的是單一景點頁面
       let id = currentUrl.match(attractionRegex)?.[1];
       let attractionData = await getApiData(`/api/attraction/${id}`);
-      createAttractionPageEl(attractionData?.["data"]);
+      const attractionDomList = {
+        attractionContentTitleOuter: document.querySelector(
+          ".attraction-content-title-outer"
+        ),
+        attractionContentImg: document.querySelector(".attraction-content-img"),
+        attractionContentBottom: document.querySelector(
+          ".attraction-content-bottom"
+        ),
+        attractionContentSwiperPagination: document.querySelector(
+          ".attraction-content-swiper-pagination"
+        ),
+        attractionContentSelectBtn: document.querySelector(
+          ".attraction-content-select-btn"
+        ),
+        attractionContentPlaceholderImg: document.querySelector(
+          ".attraction-content-placeholder-img"
+        ),
+      };
+      attractionPage.init(attractionData?.["data"], attractionDomList);
+      // createAttractionPageEl(attractionData?.["data"]);
       attractionContentSwiperPagination.firstChild.classList.add(
         "attraction-content-pagination-element-active"
       );
@@ -385,17 +319,27 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       if (!user.id) {
         window.location.href = "/";
       }
+      const num = urlParms.get("number");
       const domList = {
-        bookingInfoContainer: bookingInfoContainer,
-        bookingConfirmTotal: bookingConfirmTotal,
-        bookingContact: bookingContact,
-        bookingPayment: bookingPayment,
-        bookingConfirm: bookingConfirm,
+        bookingInfoContainer: document.querySelector(".booking-info-container"),
+        bookingConfirmTotal: document.querySelector(".booking-confirm-total"),
+        bookingContact: document.querySelector(".booking-contact"),
+        bookingPayment: document.querySelector(".booking-payment"),
+        bookingConfirm: document.querySelector(".booking-confirm"),
+        bookingContactName: document.querySelector(".booking-contact-name"),
+        bookingContactEmail: document.querySelector(".booking-contact-email"),
+        bookingContactPhonenum: document.querySelector(
+          ".booking-contact-phonenum"
+        ),
       };
-      await user.getBookingData();
-      bookingSystem.showBooking(domList, user);
-      bookingContactName.value = user.name;
-      bookingContactEmail.value = user.email;
+      if (num) {
+        await user.getOrderData(num);
+        bookingSystem.showBooking("repay", domList, user);
+      } else {
+        await user.getBookingData();
+        bookingSystem.showBooking(null, domList, user);
+      }
+
       orderSyetem.init(user);
     } else if (currentUrl === "/thankyou") {
       const urlParms = new URLSearchParams(window.location.search);
@@ -409,6 +353,36 @@ document.addEventListener("DOMContentLoaded", async (e) => {
       } else {
         window.location.href = "/";
       }
+    } else if ((currentUrl = "/membercenter")) {
+      if (!user.id) {
+        window.location.href = "/";
+      }
+      await user.getAllOrderData();
+      const userDomList = {
+        memberCenterUserDataForm: document.querySelector(
+          ".member-center-user-data-form"
+        ),
+        memberCenterUserDataMessage: document.querySelector(
+          ".member-center-user-data-message"
+        ),
+        memberCenterBtn: document.querySelector(".member-center-btn"),
+        memberCenterName: document.getElementById("memberCenterName"),
+        memberCenterEmail: document.getElementById("memberCenterEmail"),
+        memberCenterPhone: document.getElementById("memberCenterPhone"),
+      };
+      const orderDomList = {
+        memberCenterOrderDataList: document.querySelector(
+          ".member-center-order-data-list"
+        ),
+        memberCenterOrderDataListDefault: document.querySelector(
+          ".member-center-order-data-list-default"
+        ),
+      };
+      memberCenter.render(user, userDomList, user.order, orderDomList);
+
+      userDomList.memberCenterBtn.addEventListener("click", (e) => {
+        memberCenter.userDataBtnHandle(user, userDomList);
+      });
     }
   } catch (error) {
     throw new Error(error.message);
@@ -419,8 +393,8 @@ if (menuItemBooking) {
   menuItemBooking.addEventListener("click", async (e) => {
     e.preventDefault();
     try {
-      let status = await signinCheck();
-      if (status) {
+      let status = await new User().init();
+      if (status?.id) {
         window.location.href = "/booking";
       } else {
         menuItemMember.click();
@@ -441,7 +415,6 @@ if (menuItemMember) {
         localStorage.removeItem("taipei_day_trip");
         window.location.replace(window.location.href);
       } else {
-        const bodyDom = document.querySelector("body");
         const signinDom = document.querySelector(".member-signin");
         const signupDom = document.querySelector(".member-signup");
         const memberSigninCloseBtn = document.querySelector(
@@ -470,54 +443,60 @@ if (menuItemMember) {
         const memberSignupMessage = document.querySelector(
           ".member-signup-message"
         );
-        memberModal.showModal(bodyDom, signinDom, memberSigninMessage);
+        memberModal.showModal(signinDom, memberSigninMessage);
 
         if (memberSignupGoBtn) {
           memberSignupGoBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            memberModal.hideModal(bodyDom, signinDom);
-            memberModal.showModal(bodyDom, signupDom, memberSignupMessage);
+            memberModal.hideModal(signinDom);
+            memberModal.showModal(signupDom, memberSignupMessage);
           });
         }
 
         if (memberSigninGoBtn) {
           memberSigninGoBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            memberModal.hideModal(bodyDom, signupDom);
-            memberModal.showModal(bodyDom, signinDom, memberSigninMessage);
+            memberModal.hideModal(signupDom);
+            memberModal.showModal(signinDom, memberSigninMessage);
           });
         }
 
         if (memberSigninCloseBtn) {
           memberSigninCloseBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            memberModal.hideModal(bodyDom, signinDom);
+            memberModal.hideModal(signinDom);
           });
         }
 
         if (memberSignupCloseBtn) {
           memberSignupCloseBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            memberModal.hideModal(bodyDom, signupDom);
+            memberModal.hideModal(signupDom);
           });
         }
 
         if (memberSigninSubmitBtn) {
-          memberSigninSubmitBtn.addEventListener("click", (e) => {
-            memberModal.formDataHandle(
+          memberSigninSubmitBtn.addEventListener("click", async (e) => {
+            const loadingDom =
+              e.currentTarget.querySelector(".component-loading");
+            await memberModal.formDataHandle(
               "signin",
               memberSigninForm,
-              memberSigninMessage
+              memberSigninMessage,
+              loadingDom
             );
           });
         }
 
         if (memberSignupSubmitBtn) {
-          memberSignupSubmitBtn.addEventListener("click", (e) => {
-            memberModal.formDataHandle(
+          memberSignupSubmitBtn.addEventListener("click", async (e) => {
+            const loadingDom =
+              e.currentTarget.querySelector(".component-loading");
+            await memberModal.formDataHandle(
               "signup",
               memberSignupForm,
-              memberSignupMessage
+              memberSignupMessage,
+              loadingDom
             );
           });
         }
@@ -525,6 +504,27 @@ if (menuItemMember) {
     } catch (error) {
       console.error(error);
     }
+  });
+}
+
+if (menuItemMemberCenter) {
+  menuItemMemberCenter.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      let status = await new User().init();
+      if (status?.id) {
+        window.location.href = "/membercenter";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+}
+
+if (headerMenuBtn) {
+  headerMenuBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    header.menu(headerMenuBtn);
   });
 }
 
@@ -593,6 +593,9 @@ if (attractionContentFormRadio) {
 
 if (attractionContentSwiperLeftBtn) {
   attractionContentSwiperLeftBtn.addEventListener("click", (e) => {
+    const attractionContentSwiperOuter = document.querySelector(
+      ".attraction-content-swiper-outer"
+    );
     attractionContentSwiperOuter.scrollBy({
       left: -attractionContentSwiperOuter.offsetWidth,
       behavior: "smooth",
@@ -612,6 +615,9 @@ if (attractionContentSwiperLeftBtn) {
 
 if (attractionContentSwiperRightBtn) {
   attractionContentSwiperRightBtn.addEventListener("click", (e) => {
+    const attractionContentSwiperOuter = document.querySelector(
+      ".attraction-content-swiper-outer"
+    );
     attractionContentSwiperOuter.scrollBy({
       left: attractionContentSwiperOuter.offsetWidth,
       behavior: "smooth",
@@ -631,14 +637,16 @@ if (attractionContentSwiperRightBtn) {
 
 if (attractionContentSelectBtn) {
   attractionContentSelectBtn.addEventListener("click", async (e) => {
+    const loadingDom = e.currentTarget.querySelector(".component-loading");
     try {
       let status = await signinCheck();
       if (status) {
         let result = await attractionPage.formDataHandle(
           currentUrl,
-          attractionContentForm
+          attractionContentForm,
+          loadingDom
         );
-        if (result["ok"]) {
+        if (result?.["ok"]) {
           window.location.href = "/booking";
         }
       } else {
@@ -651,5 +659,9 @@ if (attractionContentSelectBtn) {
 }
 
 if (bookingConfirmBtn) {
-  bookingConfirmBtn.addEventListener("click", orderSyetem.confirmClickHandle);
+  bookingConfirmBtn.addEventListener("click", (e) => {
+    const loadingDom = e.currentTarget.querySelector(".component-loading");
+    const num = urlParms.get("number");
+    orderSyetem.confirmClickHandle(loadingDom, num);
+  });
 }

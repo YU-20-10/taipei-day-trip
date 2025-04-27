@@ -23,3 +23,8 @@ async def booking(request: Request):
 @render_router.get("/thankyou", include_in_schema=False)
 async def thankyou(request: Request):
     return FileResponse("./static/thankyou.html", media_type="text/html")
+
+
+@render_router.get("/membercenter", include_in_schema=False)
+async def membercenter(request: Request):
+    return FileResponse("./static/membercenter.html", media_type="text/html")

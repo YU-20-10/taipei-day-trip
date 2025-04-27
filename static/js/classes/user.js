@@ -14,6 +14,7 @@ class User {
       this.id = userData.data.id;
       this.name = userData.data.name;
       this.email = userData.data.email;
+      this.phone = userData.data.phone;
     }
     return this;
   }
@@ -29,6 +30,11 @@ class User {
     this.phone = orderData?.data?.contact?.phone || null;
   }
 
+  async getAllOrderData() {
+    const allOrderData = await this.fetchToGetData("getAllOrder", null);
+    this.order = allOrderData?.data || {};
+  }
+
   async fetchToGetData(mode, order_num) {
     let token = localStorage.getItem("taipei_day_trip");
     let url = "";
@@ -41,6 +47,9 @@ class User {
         break;
       case "getOrderData":
         url = `/api/orders/${order_num}`;
+        break;
+      case "getAllOrder":
+        url = `/api/orders/all`;
         break;
     }
     try {
