@@ -1,3 +1,6 @@
+import loading from "./components/loading.js";
+import Time from "./classes/time.js";
+
 function bookingSystem() {
   let model = {
     bookingData: {},
@@ -36,9 +39,14 @@ function bookingSystem() {
         throw error;
       }
     },
+    dateCheck: (date) => {
+      const time = new Time();
+      const laterThanNow = time.dateLaterThanNow(date);
+      return laterThanNow;
+    },
   };
   let view = {
-    renderBookingCard: (data, userData, dom) => {
+    renderBookingCard: (mode, data, userData, dom) => {
       const classList = {
         "booking-info-header": ["booking-info-header", "fz-4"],
         "booking-info-card": ["booking-info-card"],
@@ -52,6 +60,11 @@ function bookingSystem() {
         ],
         "booking-info-card-list-item": ["booking-info-card-list-item"],
         "booking-info-del-btn": ["booking-info-del-btn"],
+        "component-loading": ["component-loading"],
+        "component-loading-spinner": [
+          "component-loading-spinner",
+          "component-loading-gray-50",
+        ],
       };
       const h2 = document.createElement("h2");
       const cardDiv = document.createElement("div");
@@ -69,9 +82,17 @@ function bookingSystem() {
       const cardAddressLi = document.createElement("li");
       const cardAddressSpan = document.createElement("span");
       const delBtnImg = document.createElement("img");
-      const h2Text = document.createTextNode(
+      const loadingDiv = document.createElement("div");
+      const loadingSpinDiv = document.createElement("div");
+      let h2Text = document.createTextNode(
         `您好，${userData["name"]}，待預訂的行程如下：`
       );
+      if (mode === "repay") {
+        h2Text = document.createTextNode(
+          `您好，${userData["name"]}，待重新付款的行程如下：`
+        );
+      }
+
       const cardHeaderText = document.createTextNode(
         `台北一日遊：${data["attraction"]["name"]}`
       );
@@ -105,6 +126,9 @@ function bookingSystem() {
       cardPriceLi.classList.add(...classList["booking-info-card-list-item"]);
       cardAddressLi.classList.add(...classList["booking-info-card-list-item"]);
       cardDelBtn.classList.add(...classList["booking-info-del-btn"]);
+      loadingDiv.classList.add(...classList["component-loading"]);
+      loadingSpinDiv.classList.add(...classList["component-loading-spinner"]);
+
       cardHeaderLi.appendChild(cardHeaderText);
 
       cardDateSpan.appendChild(cardDateText);
@@ -128,7 +152,12 @@ function bookingSystem() {
       cardContentUl.appendChild(cardTimeLi);
       cardContentUl.appendChild(cardPriceLi);
       cardContentUl.appendChild(cardAddressLi);
-      cardDelBtn.appendChild(delBtnImg);
+
+      if (mode !== "repay") {
+        loadingDiv.appendChild(loadingSpinDiv);
+        cardDelBtn.appendChild(delBtnImg);
+        cardDelBtn.appendChild(loadingDiv);
+      }
 
       cardContent.appendChild(cardContentUl);
       cardContent.appendChild(cardDelBtn);
@@ -155,37 +184,95 @@ function bookingSystem() {
       dom.appendChild(h2);
       dom.appendChild(p);
     },
+    showBookingContent: (domList, user) => {
+      domList.bookingContact.classList.remove("booking-hide");
+      domList.bookingPayment.classList.remove("booking-hide");
+      domList.bookingConfirm.classList.remove("booking-hide");
+    },
+    renderUserData: (domList, user) => {
+      domList.bookingContactName.value = user.name;
+      domList.bookingContactEmail.value = user.email;
+      domList.bookingContactPhonenum.value = user.phone;
+    },
   };
   let controller = {
-    showBooking: async (domList, user) => {
+    showBooking: async (mode, domList, user) => {
       try {
-        if (Object.keys(user.booking).length) {
+        if (mode === "repay") {
+          let dateCheck = model.dateCheck(user?.order?.trip?.date);
+          if (!dateCheck) {
+            alert("最晚須於行程前一天付款，該筆訂單已無法付款，請重新預定行程");
+            window.location.href = "/";
+            return;
+          }
+          let data = {
+            date: user?.order?.trip?.date,
+            time: user?.order?.trip?.time,
+            price: user?.order?.price,
+            attraction: {
+              name: user?.order?.trip?.name,
+              address: user?.order?.trip?.address,
+              image: user?.order?.trip?.image,
+            },
+          };
           view.renderBookingCard(
-            user.booking,
+            "repay",
+            data,
             user,
             domList.bookingInfoContainer
           );
-          domList.bookingContact.classList.remove("booking-hide");
-          domList.bookingPayment.classList.remove("booking-hide");
-          domList.bookingConfirm.classList.remove("booking-hide");
-          domList.bookingConfirmTotal.textContent = user.booking.price;
-          controller.addClickListener("booking-info-del-btn");
+          view.showBookingContent(domList, user);
+          view.renderUserData(domList, user);
+          domList.bookingConfirmTotal.textContent = user.order.price;
         } else {
-          view.renderBookingText(user, domList.bookingInfoContainer);
+          if (Object.keys(user.booking).length) {
+            let dateCheck = model.dateCheck(user.booking.date);
+            if (!dateCheck) {
+              await model.deleteBookingData();
+              alert(
+                "最晚須於行程前一天付款，該筆訂單已無法付款，請重新預定行程"
+              );
+              window.location.href = "/";
+              return;
+            }
+            view.renderBookingCard(
+              "pay",
+              user.booking,
+              user,
+              domList.bookingInfoContainer
+            );
+            view.showBookingContent(domList, user);
+            view.renderUserData(domList, user);
+            domList.bookingConfirmTotal.textContent = user.booking.price;
+            controller.addDelListener("booking-info-del-btn");
+          } else {
+            view.renderBookingText(user, domList.bookingInfoContainer);
 
-          domList.bookingInfoContainer.style.height = `${
-            window.innerHeight - 63.2 - 113.2
-          }px`;
+            domList.bookingInfoContainer.style.height = `${
+              window.innerHeight - 63.2 - 113.2
+            }px`;
+          }
         }
       } catch (error) {
         console.log(error);
       }
     },
-    addClickListener: (className) => {
+    addDelListener: (className) => {
       let listener = document.querySelector(`.${className}`);
       listener.addEventListener("click", async (e) => {
+        const loadingDom = e.currentTarget.querySelector(".component-loading");
+        loading.show(loadingDom);
+        // 使loading平滑顯示/隱藏
+        const minLoading = 300;
+        const delay = (time) =>
+          new Promise((resolve) => setTimeout(resolve, time));
+        const start = Date.now();
         try {
           let result = await model.deleteBookingData();
+          let apiUseTime = Date.now() - start;
+          let waitTime = Math.max(0, minLoading - apiUseTime);
+          await delay(waitTime);
+          loading.hide(loadingDom);
           if (result["ok"]) {
             window.location.replace(window.location.href);
           }

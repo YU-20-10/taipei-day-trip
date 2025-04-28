@@ -6,11 +6,11 @@ from typing import Annotated
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from datetime import date
-import os
-import jwt
 import json
 
+from db_config import db_get_connection
 from model.booking_data_operation import Booking_data_operation
+from model.jwt_ import jwt_
 
 booking_api = APIRouter()
 
@@ -44,11 +44,15 @@ async def token_validaotr(token: Annotated[str, Depends(oauth2)]):
 
 
 @booking_api.get("/api/booking", response_class=JSONResponse)
-async def get_booking(token: Annotated[str, Depends(token_validaotr)]):
+async def get_booking(
+    token: Annotated[str, Depends(token_validaotr)],
+    database_connect=Depends(db_get_connection),
+):
     try:
-        key = os.getenv("JWT_SECRET_KEY")
-        user_data = jwt.decode(token, key, algorithms=["HS256"])
-        row_booking_data = Booking_data_operation.get_booking_data(user_data["id"])
+        user_data = jwt_.decode(token)
+        row_booking_data = Booking_data_operation.get_booking_data(
+            user_data["id"], database_connect
+        )
         if row_booking_data:
             booking_data = {
                 "attraction": {
@@ -82,12 +86,12 @@ async def get_booking(token: Annotated[str, Depends(token_validaotr)]):
 async def post_booking(
     token: Annotated[str, Depends(token_validaotr)],
     booking_form_data: Booking_form_data,
+    database_connect=Depends(db_get_connection),
 ):
     try:
-        key = os.getenv("JWT_SECRET_KEY")
-        user_data = jwt.decode(token, key, algorithms="HS256")
+        user_data = jwt_.decode(token)
         insert_result = Booking_data_operation.insert_booking_data(
-            booking_form_data, user_data["id"]
+            booking_form_data, user_data["id"], database_connect
         )
         if insert_result:
             return JSONResponse(
@@ -111,11 +115,15 @@ async def post_booking(
 
 
 @booking_api.delete("/api/booking", response_class=JSONResponse)
-async def delete_booking_data(token: Annotated[str, Depends(token_validaotr)]):
+async def delete_booking_data(
+    token: Annotated[str, Depends(token_validaotr)],
+    database_connect=Depends(db_get_connection),
+):
     try:
-        key = os.getenv("JWT_SECRET_KEY")
-        user_data = jwt.decode(token, key, algorithms="HS256")
-        delete_result = Booking_data_operation.delete_booking_data(user_data["id"])
+        user_data = jwt_.decode(token)
+        delete_result = Booking_data_operation.delete_booking_data(
+            user_data["id"], database_connect
+        )
         if delete_result:
             return JSONResponse(
                 status_code=200,

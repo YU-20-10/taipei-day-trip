@@ -1,0 +1,36 @@
+/*共通容器設定*/
+.outer {
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: 1200px;
+  }
+}
+
+.page-header {
+  position: relative;
+}
+
+.page-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: #e8e8e8;
+}
+
+.footer {
+  background-color: #757575;
+  padding-top: 45px;
+  padding-bottom: 45px;
+  font-weight: 700;
+}

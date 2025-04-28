@@ -1,0 +1,25 @@
+/*通用flex設定*/
+.d-flex-row {
+  display: flex;
+  align-items: center;
+}
+.d-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/*通用margin設定*/
+.margin-b-sm {
+  margin-bottom: 12px;
+}
+.margin-b-md {
+  margin-bottom: 20px;
+}
+.margin-b-lg {
+  margin-bottom: 25px;
+}
+
+/* 通用position設定 */
+.pos-relative {
+  position: relative;
+}

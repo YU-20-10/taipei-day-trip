@@ -1,12 +1,11 @@
-from db_config import database
 import mysql.connector
 import json
 
 
 class Attractions_data_operation:
-    def get_attractions_data(page, keyword):
+    def get_attractions_data(page, keyword, database_connect):
+        database_connect_cursor = None
         try:
-            database_connect = database()
             database_connect_cursor = database_connect.cursor()
             # 依據是否輸入捷運站名稱進行不同的MySQL查詢
             # 使用INNER JOIN+UNION 篩選時包含mrt_id=None的對象
@@ -27,14 +26,13 @@ class Attractions_data_operation:
             print("Error code:", error.errno)
             print("Error message:", error.msg)
         finally:
-            if database_connect.is_connected():
+            if database_connect_cursor:
                 database_connect_cursor.close()
-                database_connect.close()
 
-    def get_attraction_by_id(attractionId):
+    def get_attraction_by_id(attractionId, database_connect):
         attractions_data = {}
+        database_connect_cursor = None
         try:
-            database_connect = database()
             database_connect_cursor = database_connect.cursor()
             database_connect_cursor.execute(
                 "SELECT attractions.id,attractions.name AS attractions_name,attractions.category,attractions.description,attractions.address,attractions.transport,mrt.name AS mrt_name,attractions.lat,attractions.lng,attractions.images FROM attractions INNER JOIN mrt ON attractions.mrt_id=mrt.id WHERE attractions.id=%s",
@@ -77,6 +75,5 @@ class Attractions_data_operation:
             print("Error code:", error.errno)
             print("Error message:", error.msg)
         finally:
-            if database_connect.is_connected():
+            if database_connect_cursor:
                 database_connect_cursor.close()
-                database_connect.close()

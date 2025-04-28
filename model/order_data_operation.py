@@ -2,12 +2,9 @@ from fastapi.responses import JSONResponse
 import mysql.connector
 import json
 
-from db_config import database
 
-
-class order_data_operation:
-    def insert_order_data(order_id, user_id, order_data):
-        database_connect = None
+class Order_data_operation:
+    def insert_order_data(order_id, user_id, order_data, database_connect):
         database_connect_cursor = None
         try:
             price = order_data["order"]["price"]
@@ -16,7 +13,7 @@ class order_data_operation:
             )
             date = order_data["order"]["trip"]["date"]
             time = order_data["order"]["trip"]["time"]
-            database_connect = database()
+
             database_connect_cursor = database_connect.cursor(dictionary=True)
             database_connect_cursor.execute(
                 "INSERT INTO orders (number,user_id,price,trip,date,time,status) VALUES (%s,%s,%s,%s,%s,%s,%s)",
@@ -39,13 +36,12 @@ class order_data_operation:
                 media_type="application/json",
             )
         finally:
-            if database_connect and database_connect.is_connected():
+            if database_connect_cursor:
                 database_connect_cursor.close()
-                database_connect.close()
 
-    def update_pay_record(order_id, status, rec_trade_id):
+    def update_pay_record(order_id, status, rec_trade_id, database_connect):
+        database_connect_cursor = None
         try:
-            database_connect = database()
             database_connect_cursor = database_connect.cursor()
             if status == 0:
                 database_connect_cursor.execute(
@@ -62,13 +58,12 @@ class order_data_operation:
             print("Error code", error.errno)
             print("Error message", error.msg)
         finally:
-            if database_connect.is_connected():
+            if database_connect_cursor:
                 database_connect_cursor.close()
-                database_connect.close()
 
-    def get_order_data(num):
+    def get_order_data(num, database_connect):
+        database_connect_cursor = None
         try:
-            database_connect = database()
             database_connect_cursor = database_connect.cursor(dictionary=True)
             database_connect_cursor.execute(
                 "SELECT price,trip,date,time,status,users.name,users.email,users.phone FROM orders INNER JOIN users ON orders.user_id=users.id WHERE orders.number=%s",
@@ -80,6 +75,22 @@ class order_data_operation:
             print("Error Code", error.errno)
             print("Error Message", error.msg)
         finally:
-            if database_connect.is_connected():
+            if database_connect_cursor:
                 database_connect_cursor.close()
-                database_connect.close()
+
+    def get_all_order(user_id, database_connect):
+        database_connect_cursor = None
+        try:
+            database_connect_cursor = database_connect.cursor(dictionary=True)
+            database_connect_cursor.execute(
+                "SELECT number,trip,date,time,price,status FROM orders WHERE user_id=%s",
+                [user_id],
+            )
+            result = database_connect_cursor.fetchall()
+            return result
+        except mysql.connector.Error as error:
+            print("Error Code", error.errno)
+            print("Error Message", error.msg)
+        finally:
+            if database_connect_cursor:
+                database_connect_cursor.close()

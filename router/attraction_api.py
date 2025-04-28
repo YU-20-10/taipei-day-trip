@@ -1,18 +1,21 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 import json
 
+from db_config import db_get_connection
 from model.attractions_data_operation import Attractions_data_operation
 
 attraction_api = APIRouter()
 
 
 @attraction_api.get("/api/attractions", response_class=JSONResponse)
-async def attractions(page: int, keyword: str | None = None):
+async def attractions(
+    page: int, keyword: str | None = None, database_connect=Depends(db_get_connection)
+):
     attractions_data = []
     try:
         attractions_row_data = Attractions_data_operation.get_attractions_data(
-            page, keyword
+            page, keyword, database_connect
         )
         for attraction in attractions_row_data:
             input_data = {
@@ -54,9 +57,13 @@ async def attractions(page: int, keyword: str | None = None):
 
 
 @attraction_api.get("/api/attraction/{attractionId}", response_class=JSONResponse)
-async def get_attractions_by_id(attractionId: int):
+async def get_attractions_by_id(
+    attractionId: int, database_connect=Depends(db_get_connection)
+):
     try:
-        attractions_data = Attractions_data_operation.get_attraction_by_id(attractionId)
+        attractions_data = Attractions_data_operation.get_attraction_by_id(
+            attractionId, database_connect
+        )
         return JSONResponse(
             status_code=200,
             content={"data": attractions_data},

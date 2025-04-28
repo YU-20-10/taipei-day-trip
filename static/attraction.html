@@ -3,16 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <link rel="stylesheet" href="/static/css/style.css" />
     <script type="module" src="/static/js/all.js" defer></script>
     <title>Attraction</title>
   </head>
   <body>
-    <header class="attraction-header outer">
+    <header class="attraction-header page-header outer">
       <div class="container header-container">
         <a href="/" title="台北一日遊"
           ><img src="/static/img/logo.svg" alt="台北一日遊logo"
         /></a>
+        <button type="button" class="header-menu-btn">
+          <i class="bi bi-list"></i>
+        </button>
         <ul class="header-menu">
           <li class="header-menu-item">
             <a
@@ -21,11 +28,24 @@
               >預定行程</a
             >
           </li>
+          <li
+            class="header-menu-item component-loading-placeholder header-component-loading-placeholder"
+          ></li>
+          <li
+            class="header-menu-item component-loading-placeholder header-component-loading-placeholder"
+          ></li>
+          <li class="header-menu-item">
+            <a
+              href="#"
+              class="header-menu-item-link menu-item-member-center fz-5 fw-medium"
+            >
+            </a>
+          </li>
           <li class="header-menu-item">
             <a
               href="#"
               class="header-menu-item-link menu-item-member fz-5 fw-medium"
-              >登入/註冊
+            >
             </a>
           </li>
         </ul>
@@ -62,6 +82,11 @@
             class="member-signin-submit-btn member-modal-btn c-white fz-4"
           >
             登入帳戶
+            <div class="component-loading">
+              <div
+                class="component-loading-spinner component-loading-white"
+              ></div>
+            </div>
           </button>
           <p class="text-center fw-medium member-signin-message"></p>
           <p class="text-center fw-medium">
@@ -112,6 +137,11 @@
             class="member-signup-submit-btn member-modal-btn c-white fz-4"
           >
             註冊新帳戶
+            <div class="component-loading">
+              <div
+                class="component-loading-spinner component-loading-white"
+              ></div>
+            </div>
           </button>
           <p class="text-center fw-medium member-signup-message"></p>
           <p class="text-center fw-medium">
@@ -128,6 +158,9 @@
       <div class="container attraction-content-container">
         <div class="attraction-content-top">
           <div class="attraction-content-img">
+            <div
+              class="swiperOuterDiv component-loading-placeholder attraction-content-placeholder-img"
+            ></div>
             <div class="attraction-content-swiper-left-btn">
               <img src="/static/img/left-arrow.svg" alt="left-arrow" />
             </div>
@@ -189,11 +222,17 @@
                   </p>
                 </div>
               </form>
+
               <button
                 class="attraction-content-select-btn fz-4 c-white"
                 type="button"
               >
                 開始預約行程
+                <div class="component-loading">
+                  <div
+                    class="component-loading-spinner component-loading-white"
+                  ></div>
+                </div>
               </button>
             </div>
           </div>
